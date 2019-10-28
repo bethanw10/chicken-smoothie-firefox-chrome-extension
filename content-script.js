@@ -1,6 +1,7 @@
 browser.runtime.onMessage.addListener(processMessage);
+console.log('injected');
 
-function processMessage(request, sender, sendResponse) {	
+function processMessage(request, sender, sendResponse) {
 	switch(request.message) {
 	  case "selectRarities":
 		selectRarities(request);
@@ -10,8 +11,31 @@ function processMessage(request, sender, sendResponse) {
 		selectDuplicates(request);
 		break;
 		
+	  case "getRarityCounts":
+		var rarityCounts = getRarityCounts(request);
+		return Promise.resolve(rarityCounts)
+		
+		break;
+		
 	  default:
+		break;
 	} 
+}
+
+function getRarityCounts() {
+	var rarityCounts = {};
+	
+	for (var pet of $(".pet")) {
+		var rarity = getRarity(pet);
+		
+		if (rarityCounts[rarity]) {
+			rarityCounts[rarity] += 1;
+		} else {
+			rarityCounts[rarity] = 1;
+		}
+	}
+	
+	return rarityCounts;
 }
 
 function selectRarities(request) {		
@@ -34,16 +58,14 @@ function selectDuplicates(request) {
 		var imgUrl = src.split('&bg=')[0];
 		
 		var petCheckbox = $(pet).find(".pet-date-row, .pet-name-row").find("input");
-				
+
 		if (request.excludeUnknown && getRarity(pet) == 'Unknown') {
 			petCheckbox.prop( "checked", false );
-			
-		} else  if (set.has(imgUrl)) {
-			petCheckbox.prop( "checked", true );	
-			
-		} else {			
+		} else if(!set.has(imgUrl)) {
 			set.add(imgUrl);
-			petCheckbox.prop( "checked", false );					
+			petCheckbox.prop( "checked", false );				
+		} else {
+			petCheckbox.prop( "checked", true );
 		}
 	}
 }

@@ -15,13 +15,13 @@ function restoreSettings() {
    getSettings.then((res) => {
 		$("#page-size").attr("value", res.pageSize || '100');
 
-	   if (res.selectedRarities.length != 0) {
+	   if (res.selectedRarities && res.selectedRarities.length != 0) {
 			$(`#${res.selectedRarities.join(", #")}`).prop("checked", true);
 	   }
 
 	   $('#exclude-unknown').prop('checked', res.excludeUnknown);
 
-	   if (res.closedAccordions.length != 0) {
+	   if (res.closedAccordions && res.closedAccordions.length != 0) {
 		   res.closedAccordions.forEach(function (el) {
 				toggleAccordion($(`#${el}`)[0]);
 			});
@@ -63,7 +63,6 @@ function toggleAccordion(el) {
 }
 
 function saveSelections() {
-	debugger
 	browser.storage.local.set({
 		selectedRarities: getSelectedRarities('id'),
 		excludeUnknown: $('#exclude-unknown').prop('checked'),
@@ -93,8 +92,8 @@ function getActiveTab() {
   return browser.tabs.query({active: true, currentWindow: true});
 }
 
-function processMessage(request, sender, sendResponse) {
-	
+function displayRarityCount(rarityCounts) {
+	console.log(rarityCounts);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -114,15 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	$("#duplicates-button").on("click", selectDuplicates);
 
-	
-	
-	browser.runtime.onMessage.addListener(processMessage);
-});
-
-browser.tabs.onActivated.addListener((activeInfo) => {
-	browser.tabs.getCurrent().then((tab) => {
-		console.log(tab);
-	});
+	getActiveTab().then((tab) => {
+		browser.tabs.sendMessage(tab[0].id, {"message": "getRarityCounts"}).then(displayRarityCount);
+	});		
 });
 
 window.addEventListener("pagehide", saveSelections);

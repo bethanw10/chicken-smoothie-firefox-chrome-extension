@@ -2,72 +2,77 @@
 
 <html>
 	<head>
+		<title>Chicken Smoothie Helper Popup</title>
 		<meta charset="utf-8">
 		<script src="popup.js"></script>
 		<script src="/library/jquery.js"></script>
 		<script src="/library/jquery.shiftcheckbox.js"></script>
-		
+
 		<script src="/library/popper.js"></script>
 		<script src="/library/bootstrap.min.js"></script>
 		<link href="/library/bootstrap.css" rel="stylesheet"/>
 		<link href="/checkbox.css" rel="stylesheet"/>
 
-		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Raleway:b&display=swap" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Raleway:b&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
-		<style>			
+		<style>
+			html {
+				overflow-x: hidden;
+			}
 			body {
 				background-color: #f2f5ed;
 				font-family: 'Roboto', sans-serif;
 				font-size: 15px;
 				margin: 10px;
 			}
-			
-			h6 {			
+
+			h6 {
 				margin: 0;
+				color: #444;
 				font-weight: 600;
 				font-family: 'Raleway', sans-serif;
 			}
-			
+
 			.card {
 				min-width:  280px;
 			}
-			
+
 			.card+.card {
 				margin-top: 6px;
 			}
-			
+
 			.title {
 				display: flex;
 				align-items: center;
 			}
-			
+
 			.info-icon {
 				font-size: 20px;
-				color: #bbb !important;
+				color: #bbb;
 				margin-left: 5px;
 			}
-			
+
 			.accordion {
 				cursor: pointer;
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
 			}
-			
+
 			.accordion-arrow {
 				transition: all 0s;
 			}
-			
+
 			.accordion.active .accordion-arrow {
 				-webkit-transform: rotate(180deg);
 				-moz-transform: rotate(180deg);
 				transform: rotate(180deg);
-			} 
-			
+			}
+
 			.card-body {
 				padding: 1rem  1.25rem;
 			}
-			
+
 			#options-form label {
 				color: #666;
 				font-size: 14px;
@@ -78,17 +83,17 @@
 				align-items: center;
 				margin-bottom: 10px;
 			}
-			
+
 			.checkbox-row img {
 				margin-right: 8px;
 				object-fit:scale-down;
 				width: 20px;
 			}
-			
+
 			.card-body .checkbox-row+.checkbox-row {
 				margin-top: 6px;
 			}
-			
+
 			.checkbox-row label {
 				color: #555;
 				padding-left: 10px;
@@ -106,7 +111,7 @@
 			<div id="settings-accordion" class="card-header accordion bg-transparent">
 				<h6>Settings</h6><i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
-			<div class="card-body">				
+			<div class="card-body">
 				<form id="settings-form" >
 					<label for="page-size" >Page size</label>
 					<div class="input-group input-group-sm">
@@ -118,61 +123,61 @@
 				</form>
 			</div>
 		</div>
-		
+
 		<div id="rarity-form" class="card">
 			<div id="rarity-accordion" class="card-header accordion bg-transparent">
 				<div class="title">
 					<h6>Select Pets by Rarity</h6>
-					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom" 
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
 						title="Selects pets based on their rarity. Shift-click to select multiple checkboxes in a row">info</i>
 				</div>
 				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
-			</div>		
-			<div class="card-body">	
+			</div>
+			<div class="card-body">
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-unknown" value="Unknown">				  
-				  <label for="unknown" class="custom-label unknown"></label>
-				  <label for="unknown"><img src="/images/unknown.png"/>Unknown</label>
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-unknown" value="Unknown">
+				  <label for="select-unknown" class="custom-label unknown"></label>
+				  <label for="select-unknown"><img src="/images/unknown.png"/>Unknown</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-common" value="OMG so common">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-common" value="OMG so common">
 				  <label for="select-omg-common" class="custom-label omg-common"></label>
 				  <label for="select-omg-common"><img src="/images/omg-so-common-star.png"/>OMG so common</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-common" value="Very common">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-common" value="Very common">
 				  <label for="select-very-common" class="custom-label"></label>
 				  <label for="select-very-common"><img src="/images/very-common-star.png"/>Very common </label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-common" value="Common">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-common" value="Common">
 				  <label for="select-common" class="custom-label"></label>
 				  <label for="select-common"><img src="/images/common-star.png"/>Commmon</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-uncommon" value="Uncommon">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-uncommon" value="Uncommon">
 				  <label for="select-uncommon" class="custom-label"></label>
-				  <label for="select-uncommon"><img src="/images/uncommon-star.png"/>Uncommon </label>
+				  <label for="select-uncommon"><img src="/images/uncommon-star.png"/>Uncommon</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-rare" value="Rare">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-rare" value="Rare">
 				  <label for="select-rare" class="custom-label"></label>
 				  <label for="select-rare"><img src="/images/rare-star.png"/>Rare</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-rare" value="Very rare">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-rare" value="Very rare">
 				  <label for="select-very-rare" class="custom-label"></label>
 				  <label for="select-very-rare"><img src="/images/very-rare-star.png"/>Very rare</label>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-rare" value="OMG so rare!">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-rare" value="OMG so rare!">
 				  <label for="select-omg-rare" class="custom-label"></label>
 				  <label for="select-omg-rare"><img src="/images/omg-so-rare-star.png"/>OMG so rare!</label>
 				</div>
@@ -182,27 +187,51 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div id="duplicates-form" class="card">
 			<div id="duplicates-accordion" class="card-header accordion bg-transparent">
 				<div class="title">
 					<h6>Select Duplicates</h6>
-					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom" 
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
 						title="Selects any duplicate pets (leaving at least one pet). Doesn't work on pets that have items.">info</i>
 				</div>
 				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
-			</div>			
-			<div class="card-body">				
+			</div>
+			<div class="card-body">
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="exclude-unknown">				  
+				  <input type="checkbox" class="custom-checkbox d-none" id="exclude-unknown">
 				  <label for="exclude-unknown" class="custom-label exclude-unknown"></label>
 				  <label for="exclude-unknown">Exclude unknown rarity pets</label>
 				</div>
-				
+
 				<div class="text-right">
 					<button id="duplicates-button" class="btn btn-success btn-sm">Select</button>
 				</div>
-			</div>			
+			</div>
+		</div>
+		
+		<div id="date-form" class="card">
+			<div id="date-accordion" class="card-header accordion bg-transparent">
+				<div class="title">
+					<h6>Select by Date</h6>
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
+						title="TODO">info</i>
+				</div>
+				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+			</div>
+			<div class="card-body">
+				<div >
+				  <label for="page-size" >From</label>
+				  <input type="date" id="date" min="2008-01-01"> 
+				  </br>
+				  <label for="page-size" >To</label>
+				  <input type="date" id="date" min="2008-01-01">
+				</div>
+
+				<div class="text-right">
+					<button id="date-button" class="btn btn-success btn-sm">Select</button>
+				</div>
+			</div>
 		</div>
 	</body>
 
