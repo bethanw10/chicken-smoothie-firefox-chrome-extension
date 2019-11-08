@@ -1,5 +1,5 @@
 function saveSettings(e) {
-  var value = document.querySelector("#page-size").value;
+  var value = document.querySelector("#page-size").value || 100;
 
   browser.storage.local.set({
     pageSize: value
@@ -15,18 +15,17 @@ function restoreSettings() {
    getSettings.then((res) => {
 		$("#page-size").attr("value", res.pageSize || '100');
 
-	   if (res.selectedRarities && res.selectedRarities.length != 0) {
+	    if (res.selectedRarities && res.selectedRarities.length != 0) {
 			$(`#${res.selectedRarities.join(", #")}`).prop("checked", true);
-	   }
+	    }
 
-	   $('#exclude-unknown').prop('checked', res.excludeUnknown);
+	    $('#exclude-unknown').prop('checked', res.excludeUnknown);
 
-	   if (res.closedAccordions && res.closedAccordions.length != 0) {
+	    if (res.closedAccordions && res.closedAccordions.length != 0) {
 		   res.closedAccordions.forEach(function (el) {
 				toggleAccordion($(`#${el}`)[0]);
 			});
-	   }
-
+	    }
   });
 }
 
@@ -50,6 +49,16 @@ function selectDuplicates() {
 	});
 
 	return false;
+}
+
+function selectDates() {	
+	getActiveTab().then((tab) => {
+		browser.tabs.sendMessage(tab[0].id, {
+			"message": "selectDates",
+			"fromDate": $("#from-date").datepicker("getDate"),
+			"toDate": $("#to-date").datepicker("getDate")
+		});
+	});
 }
 
 function handleAccordionClick(e) {
@@ -93,16 +102,32 @@ function getActiveTab() {
 }
 
 function displayRarityCount(rarityCounts) {
-	console.log(rarityCounts);
+	$("#unknown-count").text(rarityCounts["Unknown"]);
+	$("#omg-common-count").text(rarityCounts["OMG so common"]);
+	$("#very-common-count").text(rarityCounts["Very common"]);
+	$("#common-count").text(rarityCounts["Common"]);
+	$("#uncommon-count").text(rarityCounts["Uncommon"]);
+	$("#rare-count").text(rarityCounts["Rare"]);
+	$("#very-rare-count").text(rarityCounts["Very rare"]);
+	$("#omg-rare-count").text(rarityCounts["OMG so rare!"]);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     restoreSettings();
 
+	$('[data-toggle="datepicker"]').datepicker({
+		startDate: new Date(2008, 6, 1),
+		endDate: new Date(),
+		weekStart: 1,
+		autoHide: true
+	});
+
 	$(".accordion").on("click", handleAccordionClick);
 
 	$('[data-toggle="tooltip"]').tooltip();
 
+	$("#date-button").on("click", selectDates);
+	
 	$("#settings-form").on("submit", saveSettings);
 
 	$('#rarity-form').find(".checkbox-row").shiftcheckbox({
@@ -112,10 +137,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	$("#rarity-button").on("click", selectRarities);
 
 	$("#duplicates-button").on("click", selectDuplicates);
-
-	getActiveTab().then((tab) => {
+		getActiveTab().then((tab) => {
 		browser.tabs.sendMessage(tab[0].id, {"message": "getRarityCounts"}).then(displayRarityCount);
-	});		
+	});	
 });
 
 window.addEventListener("pagehide", saveSelections);

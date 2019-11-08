@@ -7,11 +7,15 @@
 		<script src="popup.js"></script>
 		<script src="/library/jquery.js"></script>
 		<script src="/library/jquery.shiftcheckbox.js"></script>
-
+				
 		<script src="/library/popper.js"></script>
+
 		<script src="/library/bootstrap.min.js"></script>
 		<link href="/library/bootstrap.css" rel="stylesheet"/>
 		<link href="/checkbox.css" rel="stylesheet"/>
+		
+		<script src="/library/datepicker.js"></script>
+		<link href="/library/datepicker.css" rel="stylesheet"/>
 
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Raleway:b&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
@@ -19,10 +23,11 @@
 			html {
 				overflow-x: hidden;
 			}
+
 			body {
 				background-color: #f2f5ed;
 				font-family: 'Roboto', sans-serif;
-				font-size: 15px;
+				font-size: 14px;
 				margin: 10px;
 			}
 
@@ -31,6 +36,7 @@
 				color: #444;
 				font-weight: 600;
 				font-family: 'Raleway', sans-serif;
+				font-size: 14px;
 			}
 
 			.card {
@@ -50,6 +56,11 @@
 				font-size: 20px;
 				color: #bbb;
 				margin-left: 5px;
+			}
+			
+			.calendar-icon {
+				color: #bbb;
+				font-size: 18px;
 			}
 
 			.accordion {
@@ -102,25 +113,45 @@
 				display: flex;
 				align-items: center;
 			}
+			
+			.rarity-count {
+				margin-left: auto;
+				color: #777; 
+			}
 
 		</style>
 	</head>
 
-	<body>
-		<div class="card ">
-			<div id="settings-accordion" class="card-header accordion bg-transparent">
-				<h6>Settings</h6><i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+	<body>		
+		<div id="date-form" class="card">
+			<div id="date-accordion" class="card-header accordion bg-transparent">
+				<div class="title">
+					<h6>Select by Date</h6>
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
+						title="Selects all pets adopted between the date range">info</i>
+				</div>
+				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
-			<div class="card-body">
-				<form id="settings-form" >
-					<label for="page-size" >Page size</label>
-					<div class="input-group input-group-sm">
-						<input class="form-control" type="number" min="1" max="500" id="page-size">
-						<div class="input-group-append">
-							<button type="submit" class="btn btn-success btn-sm">Save</button>
-						</div>
+			<div class="card-body">					
+				<label for="from-date">From</label>
+				<div class="input-group input-group-sm mb-3">
+				  <input id="from-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+					<div class="input-group-append">
+						<label for="from-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">today</i></label>
 					</div>
-				</form>
+				</div>					
+	
+				<label for="to-date" >To</label>
+				<div class="input-group input-group-sm mb-3">
+				    <input id="to-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+					<div class="input-group-append">
+						<label for="to-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">event</i></label>
+					</div>
+				</div>	
+				
+				<div class="text-right">
+					<button id="date-button" class="btn btn-success btn-sm">Select</button>
+				</div>
 			</div>
 		</div>
 
@@ -138,48 +169,56 @@
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-unknown" value="Unknown">
 				  <label for="select-unknown" class="custom-label unknown"></label>
 				  <label for="select-unknown"><img src="/images/unknown.png"/>Unknown</label>
+				  <span id="unknown-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-common" value="OMG so common">
 				  <label for="select-omg-common" class="custom-label omg-common"></label>
 				  <label for="select-omg-common"><img src="/images/omg-so-common-star.png"/>OMG so common</label>
+				  <span id="omg-common-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-common" value="Very common">
 				  <label for="select-very-common" class="custom-label"></label>
-				  <label for="select-very-common"><img src="/images/very-common-star.png"/>Very common </label>
+				  <label for="select-very-common"><img src="/images/very-common-star.png"/>Very common</label>
+				  <span id="very-common-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-common" value="Common">
 				  <label for="select-common" class="custom-label"></label>
 				  <label for="select-common"><img src="/images/common-star.png"/>Commmon</label>
+				  <span id="common-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-uncommon" value="Uncommon">
 				  <label for="select-uncommon" class="custom-label"></label>
 				  <label for="select-uncommon"><img src="/images/uncommon-star.png"/>Uncommon</label>
+				  <span id="uncommon-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-rare" value="Rare">
 				  <label for="select-rare" class="custom-label"></label>
 				  <label for="select-rare"><img src="/images/rare-star.png"/>Rare</label>
+				  <span id="rare-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-rare" value="Very rare">
 				  <label for="select-very-rare" class="custom-label"></label>
 				  <label for="select-very-rare"><img src="/images/very-rare-star.png"/>Very rare</label>
+				  <span id="very-rare-count" class="rarity-count"></span>
 				</div>
 
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-rare" value="OMG so rare!">
 				  <label for="select-omg-rare" class="custom-label"></label>
 				  <label for="select-omg-rare"><img src="/images/omg-so-rare-star.png"/>OMG so rare!</label>
+				  <span id="omg-rare-count" class="rarity-count"></span>
 				</div>
 
 				<div class="text-right">
@@ -193,7 +232,7 @@
 				<div class="title">
 					<h6>Select Duplicates</h6>
 					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
-						title="Selects any duplicate pets (leaving at least one pet). Doesn't work on pets that have items.">info</i>
+						title="Selects any duplicate pets (leaving at least one pet). Doesn't work on pets that have items">info</i>
 				</div>
 				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
@@ -201,38 +240,32 @@
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="exclude-unknown">
 				  <label for="exclude-unknown" class="custom-label exclude-unknown"></label>
-				  <label for="exclude-unknown">Exclude unknown rarity pets</label>
+				  <label for="exclude-unknown">Exclude unknown pets</label>
 				</div>
 
 				<div class="text-right">
 					<button id="duplicates-button" class="btn btn-success btn-sm">Select</button>
 				</div>
 			</div>
-		</div>
+		</div>	
 		
-		<div id="date-form" class="card">
-			<div id="date-accordion" class="card-header accordion bg-transparent">
-				<div class="title">
-					<h6>Select by Date</h6>
-					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
-						title="TODO">info</i>
-				</div>
-				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+		<div class="card">
+			<div id="settings-accordion" class="card-header accordion bg-transparent">
+				<h6>Settings</h6><i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
 			<div class="card-body">
-				<div >
-				  <label for="page-size" >From</label>
-				  <input type="date" id="date" min="2008-01-01"> 
-				  </br>
-				  <label for="page-size" >To</label>
-				  <input type="date" id="date" min="2008-01-01">
-				</div>
-
-				<div class="text-right">
-					<button id="date-button" class="btn btn-success btn-sm">Select</button>
-				</div>
+				<form id="settings-form" >
+					<label for="page-size" >Page size</label>
+					<div class="input-group input-group-sm">
+						<input class="form-control" type="number" min="1" max="500" id="page-size">
+						<div class="input-group-append">
+							<button type="submit" class="btn btn-success btn-sm">Save</button>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
+
 	</body>
 
 </html>

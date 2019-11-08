@@ -3,6 +3,10 @@ console.log('injected');
 
 function processMessage(request, sender, sendResponse) {
 	switch(request.message) {
+	  case "selectDates":
+		selectDates(request);
+		break;		
+		
 	  case "selectRarities":
 		selectRarities(request);
 		break;
@@ -13,8 +17,7 @@ function processMessage(request, sender, sendResponse) {
 		
 	  case "getRarityCounts":
 		var rarityCounts = getRarityCounts(request);
-		return Promise.resolve(rarityCounts)
-		
+		return Promise.resolve(rarityCounts);	
 		break;
 		
 	  default:
@@ -49,6 +52,19 @@ function selectRarities(request) {
 	}
 }
 
+function selectDates(request) {	
+	for (var pet of $(".pet")) {
+		var petDate = getDate(pet);
+
+		var inRange = +request.fromDate <= +petDate && +petDate <= +request.toDate;
+		
+		console.log(petDate + " --- " + request.toDate);
+		
+		var petCheckbox = $(pet).find(".pet-date-row, .pet-name-row").find("input");		
+		petCheckbox.prop( "checked", inRange );
+	}
+}
+
 function selectDuplicates(request) {
 	const set = new Set();
 		
@@ -70,7 +86,30 @@ function selectDuplicates(request) {
 	}
 }
 
+function getDate(pet) {
+	var petDate = $(pet).find(".pet-date");
+	
+	if (petDate.length === 0) {
+		return null;
+	}
+	
+	var dateText = petDate[0].innerHTML;
+	
+	return new Date(dateText);
+}
+
 function getRarity(pet) {
-	var rarityImage = $(pet).find(".pet-rarity").find("img");
-	return rarityImage.attr("alt") || "Unknown";
+	var petRarity = $(pet).find(".pet-rarity");
+	
+	if (petRarity.length === 0) {
+		return "Unknown";
+	}
+	
+	var rarityImage = petRarity.find("img");
+	
+	if (rarityImage.length === 0) {
+		return petRarity[0].innerHTML;
+	} else {
+		return rarityImage.attr("alt") || "Unknown";
+	}	
 }
