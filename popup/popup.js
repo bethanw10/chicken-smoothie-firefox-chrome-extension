@@ -112,16 +112,29 @@ function displayRarityCount(rarityCounts) {
 	$("#omg-rare-count").text(rarityCounts["OMG so rare!"]);
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    restoreSettings();
-
+function setupDatepickers() {
 	$('[data-toggle="datepicker"]').datepicker({
 		startDate: new Date(2008, 6, 1),
 		endDate: new Date(),
 		weekStart: 1,
-		autoHide: true
+		autoHide: true,
+		format: 'yyyy-mm-dd'
 	});
+	
+	$('#from-date').on('pick.datepicker', function (e) {
+	   $('#to-date').datepicker('setStartDate', e.date);
+	});
+	
+	$('#to-date').on('pick.datepicker', function (e) {
+	   $('#from-date').datepicker('setEndDate', e.date);
+	});
+}
 
+document.addEventListener("DOMContentLoaded", function() {
+    restoreSettings();
+
+	setupDatepickers();
+	
 	$(".accordion").on("click", handleAccordionClick);
 
 	$('[data-toggle="tooltip"]').tooltip();
@@ -137,9 +150,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	$("#rarity-button").on("click", selectRarities);
 
 	$("#duplicates-button").on("click", selectDuplicates);
-		getActiveTab().then((tab) => {
+	
+	getActiveTab().then((tab) => {
 		browser.tabs.sendMessage(tab[0].id, {"message": "getRarityCounts"}).then(displayRarityCount);
-	});	
+	});
 });
 
 window.addEventListener("pagehide", saveSelections);
