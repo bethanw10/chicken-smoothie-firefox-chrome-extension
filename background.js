@@ -5,7 +5,7 @@ var pattern = "https://www.chickensmoothie.com/accounts/viewgroup.php*";
 
 async function redirect(details) {	
 	var gettingItem = await browser.storage.local.get('pageSize');
-	return addQueryString(details, "pageSize", gettingItem.pageSize);
+	return addQueryString(details, "pageSize", gettingItem.pageSize || '100');
 }
 
 function addQueryString(details, key, value) {

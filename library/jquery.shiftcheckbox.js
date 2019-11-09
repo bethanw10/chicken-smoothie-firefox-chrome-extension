@@ -25,7 +25,7 @@
     }
 
     $.fn.scb_changeChecked = function(opts, checked) {
-      this.prop('checked', checked);
+      this.prop('checked', checked).change();;
       opts.onChange.call(this, checked);
       return this;
     }

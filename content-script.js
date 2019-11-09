@@ -57,9 +57,7 @@ function selectDates(request) {
 		var petDate = getDate(pet);
 
 		var inRange = +request.fromDate <= +petDate && +petDate <= +request.toDate;
-		
-		console.log(petDate + " --- " + request.toDate);
-		
+				
 		var petCheckbox = $(pet).find(".pet-date-row, .pet-name-row").find("input");		
 		petCheckbox.prop( "checked", inRange );
 	}

@@ -1,17 +1,15 @@
 function saveSettings(e) {
-  var value = document.querySelector("#page-size").value || 100;
+  var value = document.querySelector("#page-size").value || '100';
 
   browser.storage.local.set({
     pageSize: value
   });
 
-  browser.tabs.reload();
-
   e.preventDefault();
 }
 
 function restoreSettings() {
-   var getSettings = browser.storage.local.get(['selectedRarities', 'excludeUnknown', 'closedAccordions', 'pageSize']);
+   var getSettings = browser.storage.local.get();
    getSettings.then((res) => {
 		$("#page-size").attr("value", res.pageSize || '100');
 
@@ -26,6 +24,14 @@ function restoreSettings() {
 				toggleAccordion($(`#${el}`)[0]);
 			});
 	    }
+		
+		if (res.fromDate) {
+			$('#from-date').datepicker('setDate', res.fromDate);
+		}
+		
+		if (res.toDate) {
+			$('#to-date').datepicker('setDate', res.toDate);
+		}
   });
 }
 
@@ -61,6 +67,15 @@ function selectDates() {
 	});
 }
 
+function getSelectedRarities(attribute) {
+	var selected = [];
+	$('#rarity-form input:checked').each(function() {
+		selected.push($(this).attr(attribute));
+	});
+
+	return selected;
+}
+
 function handleAccordionClick(e) {
 	toggleAccordion(this);
 }
@@ -69,23 +84,10 @@ function toggleAccordion(el) {
 	el.classList.toggle("active");
 	var panel = el.nextElementSibling;
 	panel.style.display = panel.style.display === "none" ? "block" : "none";
-}
-
-function saveSelections() {
+	
 	browser.storage.local.set({
-		selectedRarities: getSelectedRarities('id'),
-		excludeUnknown: $('#exclude-unknown').prop('checked'),
 		closedAccordions: getClosedAccordions()
 	});
-}
-
-function getSelectedRarities(attribute) {
-	var selected = [];
-	$('#rarity-form input:checked').each(function() {
-		selected.push($(this).attr(attribute));
-	});
-
-	return selected;
 }
 
 function getClosedAccordions() {
@@ -123,14 +125,35 @@ function setupDatepickers() {
 	
 	$('#from-date').on('pick.datepicker', function (e) {
 	   $('#to-date').datepicker('setStartDate', e.date);
+	   
+	   	browser.storage.local.set({fromDate: e.date});
 	});
 	
 	$('#to-date').on('pick.datepicker', function (e) {
-	   $('#from-date').datepicker('setEndDate', e.date);
+	   $('#from-date').datepicker('setEndDate', e.date);	   
+	  
+	   browser.storage.local.set({toDate: 'test'});
+	});
+}
+
+function saveExcludeUnknown() {
+	browser.storage.local.set({
+		excludeUnknown: $('#exclude-unknown').prop('checked')
+	});
+}
+
+function saveRaritySelections() {
+	browser.storage.local.set({
+		selectedRarities: getSelectedRarities('id')
 	});
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+	// Saving changes
+	$('#rarity-form .custom-checkbox').on('change', saveRaritySelections);
+	
+	$('#exclude-unknown').change(saveExcludeUnknown);
+	
     restoreSettings();
 
 	setupDatepickers();
@@ -149,11 +172,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	$("#rarity-button").on("click", selectRarities);
 
-	$("#duplicates-button").on("click", selectDuplicates);
+	$("#duplicates-button").on("click", selectDuplicates);	
 	
 	getActiveTab().then((tab) => {
 		browser.tabs.sendMessage(tab[0].id, {"message": "getRarityCounts"}).then(displayRarityCount);
 	});
 });
-
-window.addEventListener("pagehide", saveSelections);
