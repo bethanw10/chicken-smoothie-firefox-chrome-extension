@@ -38,34 +38,7 @@
 				font-family: 'Raleway', sans-serif;
 				font-size: 14px;
 			}
-
-			.section {				
-				min-width: 250px;
-			}
 			
-			.section-body {
-				min-width: 250px;
-				padding: 0.5rem  0.75rem;
-				background-color: #f5f7f7;
-				border-bottom: 2px solid #eee;
-			}					
-
-			.title {
-				display: flex;
-				align-items: center;
-			}
-
-			.info-icon {
-				font-size: 20px;
-				color: #bbb;
-				margin-left: 5px;
-			}
-			
-			.calendar-icon {
-				color: #bbb;
-				font-size: 18px;
-			}
-
 			.accordion {
 				padding: 0.5rem  0.75rem;
 				cursor: pointer;
@@ -83,7 +56,29 @@
 				-webkit-transform: rotate(180deg);
 				-moz-transform: rotate(180deg);
 				transform: rotate(180deg);
-			}			
+			}
+
+			.section {				
+				min-width: 250px;
+			}
+			
+			.section-body {
+				min-width: 250px;
+				padding: 0.5rem 1rem;
+				background-color: #f5f7f7;
+				border-bottom: 2px solid #eee;
+			}					
+
+			.title {
+				display: flex;
+				align-items: center;
+			}
+
+			.info-icon {
+				font-size: 20px;
+				color: #bbb;
+				margin-left: 5px;
+			}
 
 			#options-form label {
 				color: #666;
@@ -102,12 +97,12 @@
 				width: 20px;
 			}
 
-			.card-body .checkbox-row+.checkbox-row {
+			.checkbox-row+.checkbox-row {
 				margin-top: 6px;
 			}
 
 			.checkbox-row label {
-				color: #555;
+				color: #666;
 				padding-left: 10px;
 				margin: 0;
 				cursor: pointer;
@@ -120,6 +115,27 @@
 				color: #777; 
 			}
 
+			.calendar-icon {
+				color: #bbb;
+				font-size: 18px;
+			}
+
+			.date-label {
+				width: 50px;
+				margin-bottom: 0;
+				color: #666;
+			}
+			
+			.date-row {
+				display: flex;
+				align-items: center;
+			}
+			
+			.submit-button {
+				width: 100%;
+				 border-radius: 5px;
+			}
+			
 		</style>
 	</head>
 
@@ -133,25 +149,29 @@
 				</div>
 				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
-			<div class="section-body">					
-				<label for="from-date">From</label>
-				<div class="input-group input-group-sm mb-3">
-				  <input id="from-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
-					<div class="input-group-append">
-						<label for="from-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">today</i></label>
+			<div class="section-body">
+				<div class="date-row mb-2">
+					<label class="date-label" for="from-date">From</label>
+					<div class="input-group input-group-sm">
+						<input id="from-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+						<div class="input-group-append">
+							<label for="from-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">today</i></label>
+						</div>
 					</div>
-				</div>					
-	
-				<label for="to-date">To</label>
-				<div class="input-group input-group-sm mb-3">
-				    <input id="to-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
-					<div class="input-group-append">
-						<label for="to-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">event</i></label>
+				</div>
+				
+				<div class="date-row mb-3">
+					<label class="date-label" for="to-date">To</label>
+					<div class="input-group input-group-sm">
+						<input id="to-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+						<div class="input-group-append">
+							<label for="to-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">event</i></label>
+						</div>
 					</div>
-				</div>	
+				</div>
 				
 				<div class="text-right">
-					<button id="date-button" class="btn btn-primary btn-sm">Select</button>
+					<button id="date-button" class="btn btn-primary btn-sm submit-button">Select</button>
 				</div>
 			</div>
 		</div>
@@ -215,7 +235,7 @@
 				  <span id="very-rare-count" class="rarity-count"></span>
 				</div>
 
-				<div class="checkbox-row">
+				<div class="checkbox-row mb-3">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-rare" value="OMG so rare!">
 				  <label for="select-omg-rare" class="custom-label"></label>
 				  <label for="select-omg-rare"><img src="/images/omg-so-rare-star.png"/>OMG so rare!</label>
@@ -223,7 +243,7 @@
 				</div>
 
 				<div class="text-right">
-					<button id="rarity-button" class="btn btn-primary btn-sm">Select</button>
+					<button id="rarity-button" class="btn btn-primary btn-sm submit-button">Select</button>
 				</div>
 			</div>
 		</div>
@@ -245,7 +265,7 @@
 				</div>
 
 				<div class="text-right">
-					<button id="duplicates-button" class="btn btn-primary btn-sm">Select</button>
+					<button id="duplicates-button" class="btn btn-primary btn-sm submit-button">Select</button>
 				</div>
 			</div>
 		</div>	

@@ -1,6 +1,6 @@
 {
   "name": "Chicken Smoothie Helper",
-  "description": "A utility extension for Chicken Smoothie",
+  "description": "A utility extension for Chicken Smoothie.",
   "homepage_url": "https://github.com/bethanw10",
   "manifest_version": 2,
   "options_ui": {
@@ -15,8 +15,8 @@
       "scripts": ["background.js"]
   },
   "icons": {
-	"48": "images/icon-48.png",
-	"96": "images/icon-48.png"
+	"16": "images/icon-16.png",
+	"32": "images/icon-32.png"
   },
   "permissions": [
     "storage",

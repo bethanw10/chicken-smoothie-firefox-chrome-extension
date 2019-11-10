@@ -17,8 +17,15 @@ function processMessage(request, sender, sendResponse) {
 		
 	  case "getRarityCounts":
 		var rarityCounts = getRarityCounts(request);
-		return Promise.resolve(rarityCounts);	
-		break;
+		return Promise.resolve(rarityCounts);
+		
+	  case "getDuplicateCount":
+		var dupeCount = getDuplicateCount(request);
+		return Promise.resolve(dupeCount);
+		
+	  case "getDateCount":
+		var dateCount = getDateCount(request);
+		return Promise.resolve(dateCount);
 		
 	  default:
 		break;
@@ -41,7 +48,41 @@ function getRarityCounts() {
 	return rarityCounts;
 }
 
-function selectRarities(request) {		
+function getDuplicateCount(request) {
+	const set = new Set();
+	var count = 0;
+
+	for (var pet of $(".pet")) {
+		var petImage = $(pet).find("a").find("img");
+		var src = petImage.attr('src');
+		var imgUrl = src.split('&bg=')[0];
+		
+		if (!request.excludeUnknown || getRarity(pet) != 'Unknown') {			
+			if(!set.has(imgUrl)) {
+				set.add(imgUrl);
+			} else {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+function getDateCount(request) {
+	var count = 0;
+	
+	for (var pet of $(".pet")) {
+		var petDate = getDate(pet);
+
+		if (dateInRange(request.fromDate,request.toDate, petDate)) {
+			count++;
+		}		
+	}
+	console.log(count);
+	return count;
+}
+
+function selectRarities(request) {
 	for (var pet of $(".pet")) {
 		var rarity = getRarity(pet);
 		
@@ -52,11 +93,11 @@ function selectRarities(request) {
 	}
 }
 
-function selectDates(request) {	
+function selectDates(request) {
 	for (var pet of $(".pet")) {
 		var petDate = getDate(pet);
 
-		var inRange = +request.fromDate <= +petDate && +petDate <= +request.toDate;
+		var inRange = dateInRange(request.fromDate,request.toDate, petDate);
 				
 		var petCheckbox = $(pet).find(".pet-date-row, .pet-name-row").find("input");		
 		petCheckbox.prop( "checked", inRange );
@@ -110,4 +151,8 @@ function getRarity(pet) {
 	} else {
 		return rarityImage.attr("alt") || "Unknown";
 	}	
+}
+
+function dateInRange(fromDate, toDate, date) {
+	return +fromDate <= +date && +date <= +toDate;
 }
