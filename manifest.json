@@ -3,10 +3,6 @@
   "description": "A utility extension for Chicken Smoothie.",
   "homepage_url": "https://github.com/bethanw10",
   "manifest_version": 2,
-  "options_ui": {
-      "page": "options.html",
-      "browser_style": true
-  },  
   "browser_action": {
       "default_title": "Chicken Smoothie Helper",
 	  "default_popup": "popup/popup.html"
@@ -32,11 +28,5 @@
       "js": ["content-script.js", "/library/jquery.js"]
     }
   ],
-  "version": "1.1",
-  "applications": {
-      "gecko": {
-          "id": "favourite-colour-examples@mozilla.org",
-          "strict_min_version": "57.0a1"
-      }
-  }
+  "version": "1.0"
 }
