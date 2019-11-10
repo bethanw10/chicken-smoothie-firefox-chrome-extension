@@ -8,6 +8,7 @@
   vertical-align: middle;
   transition: background 0.1s ease;
   cursor: pointer;
+  background: #fff;
 }
 .custom-label:after {
   content: '';
