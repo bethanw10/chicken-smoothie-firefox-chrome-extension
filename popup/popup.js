@@ -27,7 +27,7 @@ function restoreSettings() {
 			browser.tabs
 				.sendMessage(tab[0].id, {"message": "getRarityCounts"})
 				.then(displayRarityCount);
-	
+
 		updateDuplicateCount();
 		updateDateCount();
 	});
@@ -163,6 +163,8 @@ function saveSettings(e) {
   browser.storage.local.set({
     pageSize: value
   });
+  
+  browser.tabs.reload();
 
   e.preventDefault();
 }
