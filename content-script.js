@@ -126,7 +126,7 @@ function selectDuplicates(request) {
 }
 
 function getDate(pet) {
-	var petDate = $(pet).find(".pet-date");
+	var petDate = $(pet).find(".pet-adoption-date");
 	
 	if (petDate.length === 0) {
 		return null;
