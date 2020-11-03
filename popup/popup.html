@@ -5,7 +5,7 @@
 		<title>Chicken Smoothie Helper Popup</title>
 		<meta charset="utf-8">
 		<script src="popup.js"></script>
-		<script src="/library/jquery-3.4.1.min.js"></script>
+		<script src="/library/jquery.js"></script>
 		<script src="/library/jquery.shiftcheckbox.js"></script>
 				
 		<script src="/library/popper.js"></script>
@@ -59,7 +59,7 @@
 			}
 
 			.section {				
-				min-width: 250px;
+				min-width: 270px;
 			}
 			
 			.section-body {
@@ -274,6 +274,27 @@
 				</div>
 			</div>
 		</div>	
+		
+		<div class="section">
+			<div id="rename-accordion" class="accordion bg-transparent">
+				<div class="title">
+					<h6>Rename All</h6>
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
+						title="Renames all pets with the same name">info</i>
+				</div>
+				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+			</div>
+			<div class="section-body">
+				<form id="rename-form">
+					<div class="input-group input-group-sm">
+						<input class="form-control" type="text" placeholder="Enter name" id="rename-name">
+						<div class="input-group-append">
+							<button class="btn btn-primary btn-sm">Rename</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 		
 		<div class="section">
 			<div id="settings-accordion" class="accordion bg-transparent">

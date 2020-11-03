@@ -1,5 +1,6 @@
 {
   "name": "Chicken Smoothie Helper",
+  "short_name": "CS Helper",
   "description": "A utility extension for Chicken Smoothie.",
   "homepage_url": "https://github.com/bethanw10",
   "manifest_version": 2,
@@ -12,7 +13,9 @@
   },
   "icons": {
 	"16": "images/icon-16.png",
-	"32": "images/icon-32.png"
+	"32": "images/icon-32.png",
+	"64": "images/icon-64.png",
+	"128": "images/icon-128.png"
   },
   "permissions": [
     "storage",
@@ -25,8 +28,8 @@
   "content_scripts": [
     {
       "matches": ["https://www.chickensmoothie.com/accounts/viewgroup.php*"],
-      "js": ["content-script.js", "/library/jquery-3.4.1.min.js"]
+      "js": ["content-script.js", "/library/jquery.js"]
     }
   ],
-  "version": "1.2"
+  "version": "1.3"
 }
