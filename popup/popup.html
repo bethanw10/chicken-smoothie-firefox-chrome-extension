@@ -59,7 +59,7 @@
 			}
 
 			.section {				
-				min-width: 250px;
+				min-width: 270px;
 			}
 			
 			.section-body {
@@ -215,7 +215,7 @@
 				<div class="checkbox-row">
 				  <input type="checkbox" class="custom-checkbox d-none" id="select-common" value="Common">
 				  <label for="select-common" class="custom-label"></label>
-				  <label for="select-common"><img src="/images/common-star.png"/>Commmon</label>
+				  <label for="select-common"><img src="/images/common-star.png"/>Common</label>
 				  <span id="common-count" class="rarity-count"></span>
 				</div>
 
@@ -274,6 +274,27 @@
 				</div>
 			</div>
 		</div>	
+		
+		<div class="section">
+			<div id="rename-accordion" class="accordion bg-transparent">
+				<div class="title">
+					<h6>Rename All</h6>
+					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
+						title="Renames all pets with the same name">info</i>
+				</div>
+				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+			</div>
+			<div class="section-body">
+				<form id="rename-form">
+					<div class="input-group input-group-sm">
+						<input class="form-control" type="text" placeholder="Enter name" id="rename-name">
+						<div class="input-group-append">
+							<button class="btn btn-primary btn-sm">Rename</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 		
 		<div class="section">
 			<div id="settings-accordion" class="accordion bg-transparent">

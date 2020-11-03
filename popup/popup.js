@@ -1,6 +1,5 @@
 function restoreSettings() {
-   var getSettings = browser.storage.local.get();
-   getSettings.then((res) => {
+   var getSettings = chrome.storage.local.get(null, function (res) {	   
 		$("#page-size").attr("value", res.pageSize || '100');
 
 	    if (res.selectedRarities && res.selectedRarities.length != 0) {
@@ -14,7 +13,7 @@ function restoreSettings() {
 				toggleAccordion($(`#${el}`)[0]);
 			});
 	    }
-		
+				
 		if (res.fromDate) {
 			$('#from-date').datepicker('setDate', res.fromDate);
 		}
@@ -23,20 +22,19 @@ function restoreSettings() {
 			$('#to-date').datepicker('setDate', res.toDate);
 		}
 		
-		getActiveTab().then((tab) => {
-			browser.tabs
-				.sendMessage(tab[0].id, {"message": "getRarityCounts"})
-				.then(displayRarityCount);
+		getActiveTab(function(tab) {
+			chrome.tabs
+				.sendMessage(tab[0].id, {"message": "getRarityCounts"}, displayRarityCount);
 
-		updateDuplicateCount();
-		updateDateCount();
-	});
+			updateDuplicateCount();
+			updateDateCount();
+		});
   });
 }
 
 function selectRarities() {
-	getActiveTab().then((tab) => {
-		browser.tabs.sendMessage(tab[0].id, {
+	getActiveTab(function(tab) {
+		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectRarities",
 			"rarities": getSelectedRarities('value')
 		});
@@ -46,8 +44,8 @@ function selectRarities() {
 }
 
 function selectDuplicates() {
-	getActiveTab().then((tab) => {
-		browser.tabs.sendMessage(tab[0].id, {
+	getActiveTab(function(tab) {
+		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectDuplicates",
 			"excludeUnknown" : $('#exclude-unknown').prop('checked')
 		});
@@ -57,11 +55,21 @@ function selectDuplicates() {
 }
 
 function selectDates() {	
-	getActiveTab().then((tab) => {
-		browser.tabs.sendMessage(tab[0].id, {
+	getActiveTab(function(tab) {
+		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectDates",
 			"fromDate": $("#from-date").datepicker("getDate"),
 			"toDate": $("#to-date").datepicker("getDate")
+		});
+	});
+}
+
+function renamePets(e) {
+	e.preventDefault();
+	getActiveTab(function(tab) {
+		chrome.tabs.sendMessage(tab[0].id, {
+			"message": "renamePets",
+			"name": $("#rename-name").val()
 		});
 	});
 }
@@ -76,6 +84,10 @@ function getSelectedRarities(attribute) {
 }
 
 function displayRarityCount(rarityCounts) {
+	if (!rarityCounts) {
+		return;
+	}
+	
 	updateRarityCount(rarityCounts);
 	
 	$("#unknown-count").text(rarityCounts["Unknown"]);
@@ -97,7 +109,7 @@ function toggleAccordion(el) {
 	var panel = el.nextElementSibling;
 	panel.style.display = panel.style.display === "none" ? "block" : "none";
 	
-	browser.storage.local.set({
+	chrome.storage.local.set({
 		closedAccordions: getClosedAccordions()
 	});
 }
@@ -111,12 +123,13 @@ function getClosedAccordions() {
 	return selected;
 }
 
-function getActiveTab() {
-  return browser.tabs.query({active: true, currentWindow: true});
+function getActiveTab(callback) {
+  return chrome.tabs.query({active: true, currentWindow: true}, callback);
 }
 
 function setupDatepickers() {
 	$('[data-toggle="datepicker"]').datepicker({
+		inline: true,
 		startDate: new Date(2008, 6, 1),
 		endDate: new Date(),
 		weekStart: 1,
@@ -127,75 +140,72 @@ function setupDatepickers() {
 	$('#from-date').on('pick.datepicker', function (e) {
 		$('#to-date').datepicker('setStartDate', e.date);
 	    updateDateCount();
-	   	browser.storage.local.set({fromDate: e.date});
+	   	chrome.storage.local.set({fromDate: e.date.toString()});
 	});
 	
 	$('#to-date').on('pick.datepicker', function (e) {
 		$('#from-date').datepicker('setEndDate', e.date);	   
 		updateDateCount();
-		browser.storage.local.set({toDate: e.date});
+		chrome.storage.local.set({toDate: e.date.toString()});
 	});
 }
 
 function saveExcludeUnknown() {
 	updateDuplicateCount();
 	
-	browser.storage.local.set({
+	chrome.storage.local.set({
 		excludeUnknown: $('#exclude-unknown').prop('checked')
 	});
 }
 
-function saveRaritySelections() {		
-	browser.storage.local.set({
+function saveRaritySelections() {
+	chrome.storage.local.set({
 		selectedRarities: getSelectedRarities('id')
 	});
 	
-	getActiveTab().then((tab) => {
-		browser.tabs
-			.sendMessage(tab[0].id, {"message": "getRarityCounts"})
-			.then(updateRarityCount);
+	getActiveTab(function(tab) {
+		chrome.tabs
+			.sendMessage(tab[0].id, {"message": "getRarityCounts"}, updateRarityCount);
 	});
 }
 
 function saveSettings(e) {
-  var value = document.querySelector("#page-size").value || '100';
+  var value = $("#page-size").val() || '100';
 
-  browser.storage.local.set({
+  chrome.storage.local.set({
     pageSize: value
   });
   
-  browser.tabs.reload();
+  chrome.tabs.reload();
 
   e.preventDefault();
 }
 
 function updateDuplicateCount() {
-	getActiveTab().then((tab) => {	
-		browser.tabs
+	getActiveTab(function(tab) {	
+		chrome.tabs
 			.sendMessage(tab[0].id, {
 				"message": "getDuplicateCount",
 				"excludeUnknown" : $('#exclude-unknown').prop('checked')
-			})
-			.then(function(count) {
+			}, function(count) {
 				if (count !== undefined) {
 					$('#duplicates-button').text(`Select ${count} ${count == 1? 'pet' : 'pets'}`);
-				}				
+				}
 			});
 	});
 }
 
 function updateDateCount() {
-	getActiveTab().then((tab) => {	
-		browser.tabs
+	getActiveTab(function (tab) {	
+		chrome.tabs
 			.sendMessage(tab[0].id, {
 				"message": "getDateCount",
 				"fromDate": $("#from-date").datepicker("getDate"),
 				"toDate": $("#to-date").datepicker("getDate")
-			})
-			.then(function(count) {
+			}, function(count) {
 				if (count !== undefined) {
 					$('#date-button').text(`Select ${count} ${count == 1? 'pet' : 'pets'}`);		
-				}							 
+				}
 			});
 	});
 }
@@ -217,29 +227,49 @@ function updateRarityCount(rarityCounts) {
 	$('#rarity-button').text(`Select ${total} ${total == 1? 'pet' : 'pets'}`);	
 }
 
+/* 
+The content scripts defined in manifest.json will only be injected when reloading a page AFTER installing the extension
+If the user installs the extension and tries to use it immediately on an already open CS page
+The content script will not be there and won't work
+
+So load the scripts manually if they don't exist
+*/
+function checkContentScript() {
+	getActiveTab(function (tab) {	
+		chrome.tabs.sendMessage(tab[0].id, { "message": "checkScriptExists" }, function(msg) {
+			msg = msg || {};
+			if (msg != true) {
+				chrome.tabs.executeScript(tab[0].id, {file: "/library/jquery.js"});
+				chrome.tabs.executeScript(tab[0].id, {file: "content-script.js"});
+			}
+		});
+	});
+
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-	// Saving changes
-	$('#rarity-form .custom-checkbox').on('change', saveRaritySelections);
+	checkContentScript();
 	
+	// Saving state
+	$('#rarity-form .custom-checkbox').on('change', saveRaritySelections);
 	$('#exclude-unknown').change(saveExcludeUnknown);
 	
+	// Restoring state
     restoreSettings();
-
 	setupDatepickers();
 	
 	$(".accordion").on("click", handleAccordionClick);
-
 	$('[data-toggle="tooltip"]').tooltip();
 
-	$("#date-button").on("click", selectDates);
-	
-	$("#settings-form").on("submit", saveSettings);
+	// Buttons
+	$("#date-button").on("click", selectDates);	
+	$("#rename-form").on("submit", renamePets);	
+	$("#settings-form").on("submit", saveSettings);	
+	$("#rarity-button").on("click", selectRarities);
+	$("#duplicates-button").on("click", selectDuplicates);	
 
 	$('#rarity-form').find(".checkbox-row").shiftcheckbox({
 		checkboxSelector : ':checkbox'
 	});
 
-	$("#rarity-button").on("click", selectRarities);
-
-	$("#duplicates-button").on("click", selectDuplicates);	
 });

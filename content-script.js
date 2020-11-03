@@ -1,40 +1,50 @@
-browser.runtime.onMessage.addListener(processMessage);
-console.log('injected');
+chrome.runtime.onMessage.addListener(processMessage);
 
 function processMessage(request, sender, sendResponse) {
 	switch(request.message) {
+	  case "checkScriptExists":
+		sendResponse(true);
+		break;
+		
 	  case "selectDates":
 		selectDates(request);
-		break;		
-		
+		break;
+
 	  case "selectRarities":
 		selectRarities(request);
 		break;
-		
+
 	  case "selectDuplicates":
 		selectDuplicates(request);
 		break;
-		
+
+	  case "renamePets":
+		renamePets(request);
+		break;
+
 	  case "getRarityCounts":
 		var rarityCounts = getRarityCounts(request);
-		return Promise.resolve(rarityCounts);
-		
+		sendResponse(rarityCounts);
+		break;
+
 	  case "getDuplicateCount":
 		var dupeCount = getDuplicateCount(request);
-		return Promise.resolve(dupeCount);
-		
+		sendResponse(dupeCount);
+		break;
+
 	  case "getDateCount":
 		var dateCount = getDateCount(request);
-		return Promise.resolve(dateCount);
-		
+		sendResponse(dateCount);
+		break;
+
 	  default:
 		break;
-	} 
+	}	
 }
 
 function getRarityCounts() {
 	var rarityCounts = {};
-	
+
 	for (var pet of $(".pet")) {
 		var rarity = getRarity(pet);
 		
@@ -44,7 +54,7 @@ function getRarityCounts() {
 			rarityCounts[rarity] = 1;
 		}
 	}
-	
+
 	return rarityCounts;
 }
 
@@ -73,12 +83,12 @@ function getDateCount(request) {
 	
 	for (var pet of $(".pet")) {
 		var petDate = getDate(pet);
-
-		if (dateInRange(request.fromDate,request.toDate, petDate)) {
+	
+		if (dateInRange(new Date(request.fromDate), new Date(request.toDate), petDate)) {
 			count++;
-		}		
+		}
 	}
-	console.log(count);
+	
 	return count;
 }
 
@@ -97,8 +107,8 @@ function selectDates(request) {
 	for (var pet of $(".pet")) {
 		var petDate = getDate(pet);
 
-		var inRange = dateInRange(request.fromDate,request.toDate, petDate);
-				
+		var inRange = dateInRange(new Date(request.fromDate), new Date(request.toDate), petDate);
+
 		var petCheckbox = $(pet).find(".pet-date-row, .pet-name-row").find("input");		
 		petCheckbox.prop( "checked", inRange );
 	}
@@ -118,15 +128,28 @@ function selectDuplicates(request) {
 			petCheckbox.prop( "checked", false );
 		} else if(!set.has(imgUrl)) {
 			set.add(imgUrl);
-			petCheckbox.prop( "checked", false );				
+			petCheckbox.prop( "checked", false );
 		} else {
 			petCheckbox.prop( "checked", true );
 		}
 	}
 }
 
+function renamePets(request) {
+	var renameButton = $(".rename-pets");
+	
+	if (!renameButton.hasClass("pet-rename-mode")) {
+		$(renameButton[0]).find(".btn-rename-pets").trigger("click");
+	}
+	
+	for (var pet of $(".pet")) {
+		var renameInput = $(pet).find(".pet-rename-row").find("input");
+		renameInput.val(request.name);
+	}
+}
+
 function getDate(pet) {
-	var petDate = $(pet).find(".pet-date");
+	var petDate = $(pet).find(".pet-adoption-date");
 	
 	if (petDate.length === 0) {
 		return null;
