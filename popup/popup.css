@@ -1,0 +1,128 @@
+html {
+	overflow-x: hidden;
+}
+
+body {
+	background-color: #fff;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	position: relative;
+}
+
+h6 {
+	margin: 0;
+	color: #444;
+	font-weight: 600;
+	font-family: 'Raleway', sans-serif;
+	font-size: 14px;
+}
+
+.accordion {
+	padding: 0.5rem  0.75rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;				
+	border-bottom: 2px solid #eee;
+}
+
+.accordion-arrow {
+	transition: all 0s;
+}
+
+.accordion.active .accordion-arrow {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+.section {				
+	min-width: 280px;
+}
+
+.section-body {
+	min-width: 250px;
+	padding: 0.5rem 1rem;
+	background-color: #f5f7f7;
+	border-bottom: 2px solid #eee;
+}
+
+.subsection-body {
+	display: none;
+	padding: 0 1rem;
+}
+
+.subsection-body.active {
+	display: block;
+}
+
+.title {
+	display: flex;
+	align-items: center;
+}
+
+.info-icon {
+	font-size: 15px;
+	color: #bbb;
+	margin-left: 5px;
+}
+
+#options-form label {
+	color: #666;
+	font-size: 14px;
+}
+
+.checkbox-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.checkbox-row img {
+	margin-right: 8px;
+	object-fit: scale-down;
+	width: 20px;
+}
+
+.checkbox-row+.checkbox-row {
+	margin-top: 6px;
+}
+
+.checkbox-row label {
+	color: #666;
+	padding-left: 10px;
+	margin: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.rarity-count {
+	margin-left: auto;
+	color: #777; 
+}
+
+.calendar-icon {
+	color: #bbb;
+	font-size: 18px;
+}
+
+.date-label {
+	width: 50px;
+	margin-bottom: 0;
+	color: #666;
+}
+
+.date-row {
+	display: flex;
+	align-items: center;
+}
+
+.input-group-append label {
+	cursor: pointer;
+}
+
+.submit-button {
+	width: 100%;
+	 border-radius: 5px;
+}

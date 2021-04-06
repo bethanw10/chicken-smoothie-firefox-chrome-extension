@@ -5,8 +5,13 @@ function restoreSettings() {
 	    if (res.selectedRarities && res.selectedRarities.length != 0) {
 			$(`#${res.selectedRarities.join(", #")}`).prop("checked", true);
 	    }
+		
+		if (res.selectedRenameRarities && res.selectedRenameRarities.length != 0) {
+			$(`#${res.selectedRenameRarities.join(", #")}`).prop("checked", true);
+	    }
 
 	    $('#exclude-unknown').prop('checked', res.excludeUnknown);
+	    $('#keep-oldest').prop('checked', res.keepOldest);
 
 	    if (res.closedAccordions && res.closedAccordions.length != 0) {
 		   res.closedAccordions.forEach(function (el) {
@@ -21,6 +26,19 @@ function restoreSettings() {
 		if (res.toDate) {
 			$('#to-date').datepicker('setDate', res.toDate);
 		}
+		
+		if (res.renameFromDate) {
+			$('#rename-from-date').datepicker('setDate', res.renameFromDate);
+		}
+		
+		if (res.renameToDate) {
+			$('#rename-to-date').datepicker('setDate', res.renameToDate);
+		}
+		
+		$('#rename-rarity').prop('checked', res.renameRarity);
+	    $('#rename-date').prop('checked', res.renameDate);
+		saveRenameRarity();
+		saveRenameDate();
 		
 		getActiveTab(function(tab) {
 			chrome.tabs
@@ -47,7 +65,8 @@ function selectDuplicates() {
 	getActiveTab(function(tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectDuplicates",
-			"excludeUnknown" : $('#exclude-unknown').prop('checked')
+			"excludeUnknown" : $('#exclude-unknown').prop('checked'),
+			"keepOldest": $('#keep-oldest').prop('checked')
 		});
 	});
 
@@ -66,10 +85,14 @@ function selectDates() {
 
 function renamePets(e) {
 	e.preventDefault();
+	
 	getActiveTab(function(tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "renamePets",
-			"name": $("#rename-name").val()
+			"name": $("#rename-name").val(),
+			"rarities": $('#rename-rarity').prop('checked')? getSelectedRenameRarities('value') : null,
+			"fromDate": $('#rename-date').prop('checked')? $("#rename-from-date").datepicker("getDate") : null,
+			"toDate": $('#rename-date').prop('checked') ? $("#rename-to-date").datepicker("getDate") : null
 		});
 	});
 }
@@ -83,6 +106,15 @@ function getSelectedRarities(attribute) {
 	return selected;
 }
 
+function getSelectedRenameRarities(attribute) {
+	var selected = [];
+	$('#rename-rarity-form input:checked').each(function() {
+		selected.push($(this).attr(attribute));
+	});
+
+	return selected;
+}
+
 function displayRarityCount(rarityCounts) {
 	if (!rarityCounts) {
 		return;
@@ -90,14 +122,14 @@ function displayRarityCount(rarityCounts) {
 	
 	updateRarityCount(rarityCounts);
 	
-	$("#unknown-count").text(rarityCounts["Unknown"]);
-	$("#omg-common-count").text(rarityCounts["OMG so common"]);
-	$("#very-common-count").text(rarityCounts["Very common"]);
-	$("#common-count").text(rarityCounts["Common"]);
-	$("#uncommon-count").text(rarityCounts["Uncommon"]);
-	$("#rare-count").text(rarityCounts["Rare"]);
-	$("#very-rare-count").text(rarityCounts["Very rare"]);
-	$("#omg-rare-count").text(rarityCounts["OMG so rare!"]);
+	$(".unknown-count").text(rarityCounts["Unknown"]);
+	$(".omg-common-count").text(rarityCounts["OMG so common"]);
+	$(".very-common-count").text(rarityCounts["Very common"]);
+	$(".common-count").text(rarityCounts["Common"]);
+	$(".uncommon-count").text(rarityCounts["Uncommon"]);
+	$(".rare-count").text(rarityCounts["Rare"]);
+	$(".very-rare-count").text(rarityCounts["Very rare"]);
+	$(".omg-rare-count").text(rarityCounts["OMG so rare!"]);
 }
 
 function handleAccordionClick(e) {
@@ -124,7 +156,7 @@ function getClosedAccordions() {
 }
 
 function getActiveTab(callback) {
-  return chrome.tabs.query({active: true, currentWindow: true}, callback);
+	return chrome.tabs.query({active: true, currentWindow: true}, callback);
 }
 
 function setupDatepickers() {
@@ -148,6 +180,43 @@ function setupDatepickers() {
 		updateDateCount();
 		chrome.storage.local.set({toDate: e.date.toString()});
 	});
+	
+	$('#rename-from-date').on('pick.datepicker', function (e) {
+		$('#rename-to-date').datepicker('setStartDate', e.date);
+	   	chrome.storage.local.set({renameFromDate: e.date.toString()});
+	});
+	
+	$('#rename-to-date').on('pick.datepicker', function (e) {
+		$('#rename-from-date').datepicker('setEndDate', e.date);
+		chrome.storage.local.set({renameToDate: e.date.toString()});
+	});
+}
+
+function saveRenameDate() {
+	var panel = $('#rename-date-row')[0].nextElementSibling;
+	if ($('#rename-date').prop('checked')) {
+		$(panel).addClass('active');
+	} else {
+		$(panel).removeClass('active');
+	}
+		
+	chrome.storage.local.set({
+		renameDate: $('#rename-date').prop('checked')
+	});
+}
+
+function saveRenameRarity() {
+	var panel = $('#rename-rarity-row')[0].nextElementSibling;
+	
+	if ($('#rename-rarity').prop('checked')) {
+		$(panel).addClass('active');
+	} else {
+		$(panel).removeClass('active');
+	}
+		
+	chrome.storage.local.set({
+		renameRarity: $('#rename-rarity').prop('checked')
+	});
 }
 
 function saveExcludeUnknown() {
@@ -155,6 +224,12 @@ function saveExcludeUnknown() {
 	
 	chrome.storage.local.set({
 		excludeUnknown: $('#exclude-unknown').prop('checked')
+	});
+}
+
+function saveKeepOldest() {
+	chrome.storage.local.set({
+		keepOldest: $('#keep-oldest').prop('checked')
 	});
 }
 
@@ -166,6 +241,12 @@ function saveRaritySelections() {
 	getActiveTab(function(tab) {
 		chrome.tabs
 			.sendMessage(tab[0].id, {"message": "getRarityCounts"}, updateRarityCount);
+	});
+}
+
+function saveRenameRaritySelections() {
+	chrome.storage.local.set({
+		selectedRenameRarities: getSelectedRenameRarities('id')
 	});
 }
 
@@ -252,7 +333,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	// Saving state
 	$('#rarity-form .custom-checkbox').on('change', saveRaritySelections);
+	$('#rename-rarity-form .custom-checkbox').on('change', saveRenameRaritySelections);
 	$('#exclude-unknown').change(saveExcludeUnknown);
+	$('#keep-oldest').change(saveKeepOldest);
+	$('#rename-rarity').on('change', saveRenameRarity);
+	$('#rename-date').on('change', saveRenameDate);
 	
 	// Restoring state
     restoreSettings();
@@ -271,5 +356,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	$('#rarity-form').find(".checkbox-row").shiftcheckbox({
 		checkboxSelector : ':checkbox'
 	});
-
+	
+	$('#rename-rarity-form').find(".checkbox-row").shiftcheckbox({
+		checkboxSelector : ':checkbox'
+	});
 });

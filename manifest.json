@@ -31,5 +31,5 @@
       "js": ["content-script.js", "/library/jquery.js"]
     }
   ],
-  "version": "1.3"
+  "version": "1.4"
 }

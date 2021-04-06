@@ -33,34 +33,34 @@
   transform: rotate(45deg) scale(1);
 }
 
-#select-unknown:checked ~ .custom-label {
+.unknown:checked ~ .custom-label {
   background: #aaa;
 }
 
-#select-omg-common:checked ~ .custom-label {
+.omg-common:checked ~ .custom-label {
   background: #0037fb;
 }
 
-#select-very-common:checked ~ .custom-label {
+.very-common:checked ~ .custom-label {
   background: #39c6ce;
 }
 
-#select-common:checked ~ .custom-label {
+.common:checked ~ .custom-label {
   background: #48cc2d;
 }
 
-#select-uncommon:checked ~ .custom-label {
+.uncommon:checked ~ .custom-label {
   background: #f39c16;
 }
 
-#select-rare:checked ~ .custom-label {
+.rare:checked ~ .custom-label {
   background: #fb6d00;
 }
 
-#select-very-rare:checked ~ .custom-label {
+.very-rare:checked ~ .custom-label {
   background: #f71d10;
 }
 
-#select-omg-rare:checked ~ .custom-label {
+.omg-rare:checked ~ .custom-label {
   background: #de23e2;
 }

@@ -116,8 +116,13 @@ function selectDates(request) {
 
 function selectDuplicates(request) {
 	const set = new Set();
+	var pets = $(".pet");
+	
+	if (request.keepOldest) {
+		pets = pets.get().reverse();
+	}
 		
-	for (var pet of $(".pet")) {
+	for (var pet of pets) {
 		var petImage = $(pet).find("a").find("img");
 		var src = petImage.attr('src');
 		var imgUrl = src.split('&bg=')[0];
@@ -143,6 +148,21 @@ function renamePets(request) {
 	}
 	
 	for (var pet of $(".pet")) {
+		if (request.rarities != null) {			
+			var rarity = getRarity(pet);
+			if (!request.rarities.includes(rarity)) {
+				continue;
+			}
+		}
+		
+		if (request.fromDate != null && request.toDate != null) {			
+			var petDate = getDate(pet);			
+			var inRange = dateInRange(new Date(request.fromDate), new Date(request.toDate), petDate);
+			if (!inRange) {
+				continue;
+			}
+		}
+				
 		var renameInput = $(pet).find(".pet-rename-row").find("input");
 		renameInput.val(request.name);
 	}

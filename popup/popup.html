@@ -5,6 +5,7 @@
 		<title>Chicken Smoothie Helper Popup</title>
 		<meta charset="utf-8">
 		<script src="popup.js"></script>
+		
 		<script src="/library/jquery.js"></script>
 		<script src="/library/jquery.shiftcheckbox.js"></script>
 				
@@ -19,129 +20,8 @@
 
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Raleway:b&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
-		<style>
-			html {
-				overflow-x: hidden;
-			}
-
-			body {
-				background-color: #fff;
-				font-family: 'Roboto', sans-serif;
-				font-size: 14px;
-				position: relative;
-			}
-
-			h6 {
-				margin: 0;
-				color: #444;
-				font-weight: 600;
-				font-family: 'Raleway', sans-serif;
-				font-size: 14px;
-			}
-			
-			.accordion {
-				padding: 0.5rem  0.75rem;
-				cursor: pointer;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;				
-				border-bottom: 2px solid #eee;
-			}
-
-			.accordion-arrow {
-				transition: all 0s;
-			}
-
-			.accordion.active .accordion-arrow {
-				-webkit-transform: rotate(180deg);
-				-moz-transform: rotate(180deg);
-				transform: rotate(180deg);
-			}
-
-			.section {				
-				min-width: 270px;
-			}
-			
-			.section-body {
-				min-width: 250px;
-				padding: 0.5rem 1rem;
-				background-color: #f5f7f7;
-				border-bottom: 2px solid #eee;
-			}					
-
-			.title {
-				display: flex;
-				align-items: center;
-			}
-
-			.info-icon {
-				font-size: 20px;
-				color: #bbb;
-				margin-left: 5px;
-			}
-
-			#options-form label {
-				color: #666;
-				font-size: 14px;
-			}
-
-			.checkbox-row {
-				display: flex;
-				align-items: center;
-				margin-bottom: 10px;
-			}
-
-			.checkbox-row img {
-				margin-right: 8px;
-				object-fit: scale-down;
-				width: 20px;
-			}
-
-			.checkbox-row+.checkbox-row {
-				margin-top: 6px;
-			}
-
-			.checkbox-row label {
-				color: #666;
-				padding-left: 10px;
-				margin: 0;
-				cursor: pointer;
-				display: flex;
-				align-items: center;
-			}
-			
-			.rarity-count {
-				margin-left: auto;
-				color: #777; 
-			}
-
-			.calendar-icon {
-				color: #bbb;
-				font-size: 18px;
-				
-			}
-
-			.date-label {
-				width: 50px;
-				margin-bottom: 0;
-				color: #666;
-			}
-			
-			.date-row {
-				display: flex;
-				align-items: center;
-			}
-			
-			.input-group-append label {
-				cursor: pointer;
-			}
-			
-			.submit-button {
-				width: 100%;
-				 border-radius: 5px;
-			}
-			
-		</style>
+		
+		<link href="popup.css" rel="stylesheet"/>
 	</head>
 
 	<body>		
@@ -192,59 +72,59 @@
 			</div>
 			<div class="section-body">
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-unknown" value="Unknown">
+				  <input type="checkbox" class="custom-checkbox d-none unknown" id="select-unknown" value="Unknown">
 				  <label for="select-unknown" class="custom-label"></label>
 				  <label for="select-unknown"><img src="/images/unknown.png"/>Unknown</label>
-				  <span id="unknown-count" class="rarity-count"></span>
+				  <span class="rarity-count unknown-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-common" value="OMG so common">
+				  <input type="checkbox" class="custom-checkbox d-none omg-common" id="select-omg-common" value="OMG so common">
 				  <label for="select-omg-common" class="custom-label"></label>
 				  <label for="select-omg-common"><img src="/images/omg-so-common-star.png"/>OMG so common</label>
-				  <span id="omg-common-count" class="rarity-count"></span>
+				  <span class="rarity-count omg-common-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-common" value="Very common">
+				  <input type="checkbox" class="custom-checkbox d-none very-common" id="select-very-common" value="Very common">
 				  <label for="select-very-common" class="custom-label"></label>
 				  <label for="select-very-common"><img src="/images/very-common-star.png"/>Very common</label>
-				  <span id="very-common-count" class="rarity-count"></span>
+				  <span class="rarity-count very-common-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-common" value="Common">
+				  <input type="checkbox" class="custom-checkbox d-none common" id="select-common" value="Common">
 				  <label for="select-common" class="custom-label"></label>
 				  <label for="select-common"><img src="/images/common-star.png"/>Common</label>
-				  <span id="common-count" class="rarity-count"></span>
+				  <span class="rarity-count common-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-uncommon" value="Uncommon">
+				  <input type="checkbox" class="custom-checkbox d-none uncommon" id="select-uncommon" value="Uncommon">
 				  <label for="select-uncommon" class="custom-label"></label>
 				  <label for="select-uncommon"><img src="/images/uncommon-star.png"/>Uncommon</label>
-				  <span id="uncommon-count" class="rarity-count"></span>
+				  <span class="rarity-count uncommon-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-rare" value="Rare">
+				  <input type="checkbox" class="custom-checkbox d-none rare" id="select-rare" value="Rare">
 				  <label for="select-rare" class="custom-label"></label>
 				  <label for="select-rare"><img src="/images/rare-star.png"/>Rare</label>
-				  <span id="rare-count" class="rarity-count"></span>
+				  <span class="rarity-count rare-count"></span>
 				</div>
 
 				<div class="checkbox-row">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-very-rare" value="Very rare">
+				  <input type="checkbox" class="custom-checkbox d-none very-rare" id="select-very-rare" value="Very rare">
 				  <label for="select-very-rare" class="custom-label"></label>
 				  <label for="select-very-rare"><img src="/images/very-rare-star.png"/>Very rare</label>
-				  <span id="very-rare-count" class="rarity-count"></span>
+				  <span class="rarity-count very-rare-count"></span>
 				</div>
 
 				<div class="checkbox-row mb-3">
-				  <input type="checkbox" class="custom-checkbox d-none" id="select-omg-rare" value="OMG so rare!">
+				  <input type="checkbox" class="custom-checkbox d-none omg-rare" id="select-omg-rare" value="OMG so rare!">
 				  <label for="select-omg-rare" class="custom-label"></label>
 				  <label for="select-omg-rare"><img src="/images/omg-so-rare-star.png"/>OMG so rare!</label>
-				  <span id="omg-rare-count" class="rarity-count"></span>
+				  <span class="rarity-count omg-rare-count"></span>
 				</div>
 
 				<div class="text-right">
@@ -268,6 +148,12 @@
 				  <label for="exclude-unknown" class="custom-label exclude-unknown"></label>
 				  <label for="exclude-unknown">Exclude unknown pets</label>
 				</div>
+				
+				<div class="checkbox-row">
+				  <input type="checkbox" class="custom-checkbox d-none" id="keep-oldest">
+				  <label for="keep-oldest" class="custom-label keep-oldest"></label>
+				  <label for="keep-oldest">Keep oldest pet</label>
+				</div>
 
 				<div class="text-right">
 					<button id="duplicates-button" class="btn btn-primary btn-sm submit-button">Select</button>
@@ -278,13 +164,101 @@
 		<div class="section">
 			<div id="rename-accordion" class="accordion bg-transparent">
 				<div class="title">
-					<h6>Rename All</h6>
+					<h6>Mass Rename</h6>
 					<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom"
-						title="Renames all pets with the same name">info</i>
+						title="Rename multiple pets at the same time. Don't forget to save!">info</i>
 				</div>
 				<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 			</div>
 			<div class="section-body">
+				<div class="checkbox-row" id="rename-rarity-row">
+				  <input type="checkbox" class="custom-checkbox d-none" id="rename-rarity">
+				  <label for="rename-rarity" class="custom-label rename-rarity"></label>
+				  <label for="rename-rarity"><b>Rename by rarity</b></label>
+				</div>
+				<div class="subsection-body" id="rename-rarity-form">
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none unknown" id="rename-select-unknown" value="Unknown">
+					  <label for="rename-select-unknown" class="custom-label"></label>
+					  <label for="rename-select-unknown"><img src="/images/unknown.png"/>Unknown</label>
+					  <span class="rarity-count unknown-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none omg-common" id="rename-select-omg-common" value="OMG so common">
+					  <label for="rename-select-omg-common" class="custom-label"></label>
+					  <label for="rename-select-omg-common"><img src="/images/omg-so-common-star.png"/>OMG so common</label>
+					  <span class="rarity-count omg-common-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none very-common" id="rename-select-very-common" value="Very common">
+					  <label for="rename-select-very-common" class="custom-label"></label>
+					  <label for="rename-select-very-common"><img src="/images/very-common-star.png"/>Very common</label>
+					  <span class="rarity-count very-common-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none common" id="rename-select-common" value="Common">
+					  <label for="rename-select-common" class="custom-label"></label>
+					  <label for="rename-select-common"><img src="/images/common-star.png"/>Common</label>
+					  <span class="rarity-count common-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none uncommon" id="rename-select-uncommon" value="Uncommon">
+					  <label for="rename-select-uncommon" class="custom-label"></label>
+					  <label for="rename-select-uncommon"><img src="/images/uncommon-star.png"/>Uncommon</label>
+					  <span class="rarity-count uncommon-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none rare" id="rename-select-rare" value="Rare">
+					  <label for="rename-select-rare" class="custom-label"></label>
+					  <label for="rename-select-rare"><img src="/images/rare-star.png"/>Rare</label>
+					  <span class="rarity-count rare-count"></span>
+					</div>
+
+					<div class="checkbox-row">
+					  <input type="checkbox" class="custom-checkbox d-none very-rare" id="rename-select-very-rare" value="Very rare">
+					  <label for="rename-select-very-rare" class="custom-label"></label>
+					  <label for="rename-select-very-rare"><img src="/images/very-rare-star.png"/>Very rare</label>
+					  <span class="rarity-count very-rare-count"></span>
+					</div>
+
+					<div class="checkbox-row mb-3">
+					  <input type="checkbox" class="custom-checkbox d-none omg-rare" id="rename-select-omg-rare" value="OMG so rare!">
+					  <label for="rename-select-omg-rare" class="custom-label"></label>
+					  <label for="rename-select-omg-rare"><img src="/images/omg-so-rare-star.png"/>OMG so rare!</label>
+					  <span class="rarity-count omg-rare-count"></span>
+					</div>
+				</div>
+				<div class="checkbox-row" id="rename-date-row">
+				  <input type="checkbox" class="custom-checkbox d-none" id="rename-date">
+				  <label for="rename-date" class="custom-label rename-date"></label>
+				  <label for="rename-date"><b>Rename by date</b></label>
+				</div>
+				<div class="subsection-body">
+					<div class="date-row mb-2">
+						<label class="date-label" for="rename-from-date">From</label>
+						<div class="input-group input-group-sm">
+							<input id="rename-from-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+							<div class="input-group-append">
+								<label for="rename-from-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">today</i></label>
+							</div>
+						</div>
+					</div>
+					
+					<div class="date-row mb-3">
+						<label class="date-label" for="rename-to-date">To</label>
+						<div class="input-group input-group-sm">
+							<input id="rename-to-date" class="form-control" data-toggle="datepicker" placeholder="Select date">
+							<div class="input-group-append">
+								<label for="rename-to-date" class="input-group-text"><i class="calendar-icon material-icons-outlined">event</i></label>
+							</div>
+						</div>
+					</div>
+				</div>
 				<form id="rename-form">
 					<div class="input-group input-group-sm">
 						<input class="form-control" type="text" placeholder="Enter name" id="rename-name">
