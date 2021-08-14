@@ -27,9 +27,9 @@
 
   "content_scripts": [
     {
-      "matches": ["https://www.chickensmoothie.com/accounts/viewgroup.php*"],
+      "matches": ["https://www.chickensmoothie.com/accounts/viewgroup.php*", "https://www.chickensmoothie.com/archive/*"],
       "js": ["content-script.js", "/library/jquery.js"]
     }
   ],
-  "version": "1.4"
+  "version": "1.5"
 }

@@ -1,57 +1,65 @@
 function restoreSettings() {
-   var getSettings = chrome.storage.local.get(null, function (res) {	   
-		$("#page-size").attr("value", res.pageSize || '100');
+	chrome.storage.local.get(null, function (res) {
+		$("#group-page-size").attr("value", res.groupPageSize || '100');
+		$("#archive-page-size").attr("value", res.archivePageSize || '100');
 
-	    if (res.selectedRarities && res.selectedRarities.length != 0) {
+		if (res.selectedRarities && res.selectedRarities.length != 0) {
 			$(`#${res.selectedRarities.join(", #")}`).prop("checked", true);
-	    }
-		
+		}
+
 		if (res.selectedRenameRarities && res.selectedRenameRarities.length != 0) {
 			$(`#${res.selectedRenameRarities.join(", #")}`).prop("checked", true);
-	    }
+		}
 
-	    $('#exclude-unknown').prop('checked', res.excludeUnknown);
-	    $('#keep-oldest').prop('checked', res.keepOldest);
+		$('#exclude-unknown').prop('checked', res.excludeUnknown);
+		$('#keep-oldest').prop('checked', res.keepOldest);
 
-	    if (res.closedAccordions && res.closedAccordions.length != 0) {
-		   res.closedAccordions.forEach(function (el) {
+		if (res.closedAccordions && res.closedAccordions.length != 0) {
+			res.closedAccordions.forEach(function (el) {
 				toggleAccordion($(`#${el}`)[0]);
 			});
-	    }
-				
+		}
+
 		if (res.fromDate) {
 			$('#from-date').datepicker('setDate', res.fromDate);
 		}
-		
+
 		if (res.toDate) {
 			$('#to-date').datepicker('setDate', res.toDate);
 		}
-		
+
 		if (res.renameFromDate) {
 			$('#rename-from-date').datepicker('setDate', res.renameFromDate);
 		}
-		
+
 		if (res.renameToDate) {
 			$('#rename-to-date').datepicker('setDate', res.renameToDate);
 		}
-		
+
 		$('#rename-rarity').prop('checked', res.renameRarity);
-	    $('#rename-date').prop('checked', res.renameDate);
+		$('#rename-date').prop('checked', res.renameDate);
+		
+		$('#enable-group-page-size').prop('checked', res.enableGroupPageSize);
+		$('#enable-archive-page-size').prop('checked', res.enableArchivePageSize);
+
+		// Show or hide checkboxes (?)
 		saveRenameRarity();
 		saveRenameDate();
-		
-		getActiveTab(function(tab) {
+		saveEnableGroupPageSize();
+		saveEnableArchivePageSize();
+
+		getActiveTab(function (tab) {
 			chrome.tabs
-				.sendMessage(tab[0].id, {"message": "getRarityCounts"}, displayRarityCount);
+				.sendMessage(tab[0].id, { "message": "getRarityCounts" }, displayRarityCount);
 
 			updateDuplicateCount();
 			updateDateCount();
 		});
-  });
+	});
 }
 
 function selectRarities() {
-	getActiveTab(function(tab) {
+	getActiveTab(function (tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectRarities",
 			"rarities": getSelectedRarities('value')
@@ -62,10 +70,10 @@ function selectRarities() {
 }
 
 function selectDuplicates() {
-	getActiveTab(function(tab) {
+	getActiveTab(function (tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectDuplicates",
-			"excludeUnknown" : $('#exclude-unknown').prop('checked'),
+			"excludeUnknown": $('#exclude-unknown').prop('checked'),
 			"keepOldest": $('#keep-oldest').prop('checked')
 		});
 	});
@@ -73,8 +81,8 @@ function selectDuplicates() {
 	return false;
 }
 
-function selectDates() {	
-	getActiveTab(function(tab) {
+function selectDates() {
+	getActiveTab(function (tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "selectDates",
 			"fromDate": $("#from-date").datepicker("getDate"),
@@ -85,13 +93,13 @@ function selectDates() {
 
 function renamePets(e) {
 	e.preventDefault();
-	
-	getActiveTab(function(tab) {
+
+	getActiveTab(function (tab) {
 		chrome.tabs.sendMessage(tab[0].id, {
 			"message": "renamePets",
 			"name": $("#rename-name").val(),
-			"rarities": $('#rename-rarity').prop('checked')? getSelectedRenameRarities('value') : null,
-			"fromDate": $('#rename-date').prop('checked')? $("#rename-from-date").datepicker("getDate") : null,
+			"rarities": $('#rename-rarity').prop('checked') ? getSelectedRenameRarities('value') : null,
+			"fromDate": $('#rename-date').prop('checked') ? $("#rename-from-date").datepicker("getDate") : null,
 			"toDate": $('#rename-date').prop('checked') ? $("#rename-to-date").datepicker("getDate") : null
 		});
 	});
@@ -99,7 +107,7 @@ function renamePets(e) {
 
 function getSelectedRarities(attribute) {
 	var selected = [];
-	$('#rarity-form input:checked').each(function() {
+	$('#rarity-form input:checked').each(function () {
 		selected.push($(this).attr(attribute));
 	});
 
@@ -108,7 +116,7 @@ function getSelectedRarities(attribute) {
 
 function getSelectedRenameRarities(attribute) {
 	var selected = [];
-	$('#rename-rarity-form input:checked').each(function() {
+	$('#rename-rarity-form input:checked').each(function () {
 		selected.push($(this).attr(attribute));
 	});
 
@@ -119,9 +127,9 @@ function displayRarityCount(rarityCounts) {
 	if (!rarityCounts) {
 		return;
 	}
-	
+
 	updateRarityCount(rarityCounts);
-	
+
 	$(".unknown-count").text(rarityCounts["Unknown"]);
 	$(".omg-common-count").text(rarityCounts["OMG so common"]);
 	$(".very-common-count").text(rarityCounts["Very common"]);
@@ -140,7 +148,7 @@ function toggleAccordion(el) {
 	el.classList.toggle("active");
 	var panel = el.nextElementSibling;
 	panel.style.display = panel.style.display === "none" ? "block" : "none";
-	
+
 	chrome.storage.local.set({
 		closedAccordions: getClosedAccordions()
 	});
@@ -148,7 +156,7 @@ function toggleAccordion(el) {
 
 function getClosedAccordions() {
 	var selected = [];
-	$('.accordion.active').each(function() {
+	$('.accordion.active').each(function () {
 		selected.push($(this).attr('id'));
 	});
 
@@ -156,7 +164,7 @@ function getClosedAccordions() {
 }
 
 function getActiveTab(callback) {
-	return chrome.tabs.query({active: true, currentWindow: true}, callback);
+	return chrome.tabs.query({ active: true, currentWindow: true }, callback);
 }
 
 function setupDatepickers() {
@@ -168,27 +176,27 @@ function setupDatepickers() {
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	});
-	
+
 	$('#from-date').on('pick.datepicker', function (e) {
 		$('#to-date').datepicker('setStartDate', e.date);
-	    updateDateCount();
-	   	chrome.storage.local.set({fromDate: e.date.toString()});
-	});
-	
-	$('#to-date').on('pick.datepicker', function (e) {
-		$('#from-date').datepicker('setEndDate', e.date);	   
 		updateDateCount();
-		chrome.storage.local.set({toDate: e.date.toString()});
+		chrome.storage.local.set({ fromDate: e.date.toString() });
 	});
-	
+
+	$('#to-date').on('pick.datepicker', function (e) {
+		$('#from-date').datepicker('setEndDate', e.date);
+		updateDateCount();
+		chrome.storage.local.set({ toDate: e.date.toString() });
+	});
+
 	$('#rename-from-date').on('pick.datepicker', function (e) {
 		$('#rename-to-date').datepicker('setStartDate', e.date);
-	   	chrome.storage.local.set({renameFromDate: e.date.toString()});
+		chrome.storage.local.set({ renameFromDate: e.date.toString() });
 	});
-	
+
 	$('#rename-to-date').on('pick.datepicker', function (e) {
 		$('#rename-from-date').datepicker('setEndDate', e.date);
-		chrome.storage.local.set({renameToDate: e.date.toString()});
+		chrome.storage.local.set({ renameToDate: e.date.toString() });
 	});
 }
 
@@ -199,7 +207,7 @@ function saveRenameDate() {
 	} else {
 		$(panel).removeClass('active');
 	}
-		
+
 	chrome.storage.local.set({
 		renameDate: $('#rename-date').prop('checked')
 	});
@@ -207,21 +215,49 @@ function saveRenameDate() {
 
 function saveRenameRarity() {
 	var panel = $('#rename-rarity-row')[0].nextElementSibling;
-	
+
 	if ($('#rename-rarity').prop('checked')) {
 		$(panel).addClass('active');
 	} else {
 		$(panel).removeClass('active');
 	}
-		
+
 	chrome.storage.local.set({
 		renameRarity: $('#rename-rarity').prop('checked')
 	});
 }
 
+function saveEnableGroupPageSize() {
+	var panel = $('#group-page-size-row')[0].nextElementSibling;
+
+	if ($('#enable-group-page-size').prop('checked')) {
+		$(panel).addClass('active');
+	} else {
+		$(panel).removeClass('active');
+	}
+
+	chrome.storage.local.set({
+		enableGroupPageSize: $('#enable-group-page-size').prop('checked')
+	});
+}
+
+function saveEnableArchivePageSize() {
+	var panel = $('#archive-page-size-row')[0].nextElementSibling;
+
+	if ($('#enable-archive-page-size').prop('checked')) {
+		$(panel).addClass('active');
+	} else {
+		$(panel).removeClass('active');
+	}
+
+	chrome.storage.local.set({
+		enableArchivePageSize: $('#enable-archive-page-size').prop('checked')
+	});
+}
+
 function saveExcludeUnknown() {
 	updateDuplicateCount();
-	
+
 	chrome.storage.local.set({
 		excludeUnknown: $('#exclude-unknown').prop('checked')
 	});
@@ -237,10 +273,10 @@ function saveRaritySelections() {
 	chrome.storage.local.set({
 		selectedRarities: getSelectedRarities('id')
 	});
-	
-	getActiveTab(function(tab) {
+
+	getActiveTab(function (tab) {
 		chrome.tabs
-			.sendMessage(tab[0].id, {"message": "getRarityCounts"}, updateRarityCount);
+			.sendMessage(tab[0].id, { "message": "getRarityCounts" }, updateRarityCount);
 	});
 }
 
@@ -251,41 +287,47 @@ function saveRenameRaritySelections() {
 }
 
 function saveSettings(e) {
-  var value = $("#page-size").val() || '100';
+	var groupSize = $("#group-page-size").val() || '100';
 
-  chrome.storage.local.set({
-    pageSize: value
-  });
-  
-  chrome.tabs.reload();
+	chrome.storage.local.set({
+		groupPageSize: groupSize
+	});
 
-  e.preventDefault();
+	var archiveSize = $("#archive-page-size").val() || '100';
+
+	chrome.storage.local.set({
+		archivePageSize: archiveSize
+	});
+
+	chrome.tabs.reload();
+
+	e.preventDefault();
 }
 
 function updateDuplicateCount() {
-	getActiveTab(function(tab) {	
+	getActiveTab(function (tab) {
 		chrome.tabs
 			.sendMessage(tab[0].id, {
 				"message": "getDuplicateCount",
-				"excludeUnknown" : $('#exclude-unknown').prop('checked')
-			}, function(count) {
+				"excludeUnknown": $('#exclude-unknown').prop('checked')
+			}, function (count) {
 				if (count !== undefined) {
-					$('#duplicates-button').text(`Select ${count} ${count == 1? 'pet' : 'pets'}`);
+					$('#duplicates-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
 				}
 			});
 	});
 }
 
 function updateDateCount() {
-	getActiveTab(function (tab) {	
+	getActiveTab(function (tab) {
 		chrome.tabs
 			.sendMessage(tab[0].id, {
 				"message": "getDateCount",
 				"fromDate": $("#from-date").datepicker("getDate"),
 				"toDate": $("#to-date").datepicker("getDate")
-			}, function(count) {
+			}, function (count) {
 				if (count !== undefined) {
-					$('#date-button').text(`Select ${count} ${count == 1? 'pet' : 'pets'}`);		
+					$('#date-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
 				}
 			});
 	});
@@ -295,42 +337,42 @@ function updateRarityCount(rarityCounts) {
 	if (!rarityCounts) {
 		return;
 	};
-	
+
 	var values = getSelectedRarities("value");
-	
+
 	var total = 0;
 	for (var value of values) {
 		if (rarityCounts[value]) {
 			total += rarityCounts[value];
 		}
 	}
-	
-	$('#rarity-button').text(`Select ${total} ${total == 1? 'pet' : 'pets'}`);	
+
+	$('#rarity-button').text(`Select ${total} ${total == 1 ? 'pet' : 'pets'}`);
 }
 
 /* 
-The content scripts defined in manifest.json will only be injected when reloading a page AFTER installing the extension
-If the user installs the extension and tries to use it immediately on an already open CS page
-The content script will not be there and won't work
+	The content scripts defined in manifest.json will only be injected when reloading a page AFTER installing the extension
+	If the user installs the extension and tries to use it immediately on an already open CS page
+	The content script will not be there and won't work
 
-So load the scripts manually if they don't exist
+	So load the scripts manually if they don't exist
 */
 function checkContentScript() {
-	getActiveTab(function (tab) {	
-		chrome.tabs.sendMessage(tab[0].id, { "message": "checkScriptExists" }, function(msg) {
+	getActiveTab(function (tab) {
+		chrome.tabs.sendMessage(tab[0].id, { "message": "checkScriptExists" }, function (msg) {
 			msg = msg || {};
 			if (msg != true) {
-				chrome.tabs.executeScript(tab[0].id, {file: "/library/jquery.js"});
-				chrome.tabs.executeScript(tab[0].id, {file: "content-script.js"});
+				chrome.tabs.executeScript(tab[0].id, { file: "/library/jquery.js" });
+				chrome.tabs.executeScript(tab[0].id, { file: "content-script.js" });
 			}
 		});
 	});
 
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 	checkContentScript();
-	
+
 	// Saving state
 	$('#rarity-form .custom-checkbox').on('change', saveRaritySelections);
 	$('#rename-rarity-form .custom-checkbox').on('change', saveRenameRaritySelections);
@@ -338,26 +380,29 @@ document.addEventListener("DOMContentLoaded", function() {
 	$('#keep-oldest').change(saveKeepOldest);
 	$('#rename-rarity').on('change', saveRenameRarity);
 	$('#rename-date').on('change', saveRenameDate);
-	
+
+	$('#enable-group-page-size').on('change', saveEnableGroupPageSize);
+	$('#enable-archive-page-size').on('change', saveEnableArchivePageSize);
+
 	// Restoring state
-    restoreSettings();
+	restoreSettings();
 	setupDatepickers();
-	
+
 	$(".accordion").on("click", handleAccordionClick);
 	$('[data-toggle="tooltip"]').tooltip();
 
 	// Buttons
-	$("#date-button").on("click", selectDates);	
-	$("#rename-form").on("submit", renamePets);	
-	$("#settings-form").on("submit", saveSettings);	
+	$("#date-button").on("click", selectDates);
 	$("#rarity-button").on("click", selectRarities);
-	$("#duplicates-button").on("click", selectDuplicates);	
+	$("#duplicates-button").on("click", selectDuplicates);
+	$("#rename-form").on("submit", renamePets);
+	$("#settings-form").on("submit", saveSettings);
 
 	$('#rarity-form').find(".checkbox-row").shiftcheckbox({
-		checkboxSelector : ':checkbox'
+		checkboxSelector: ':checkbox'
 	});
-	
+
 	$('#rename-rarity-form').find(".checkbox-row").shiftcheckbox({
-		checkboxSelector : ':checkbox'
+		checkboxSelector: ':checkbox'
 	});
 });

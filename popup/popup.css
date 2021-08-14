@@ -49,13 +49,19 @@ h6 {
 
 .subsection-body {
 	display: none;
-	padding: 0 1rem;
 }
 
 .subsection-body.active {
 	display: block;
 }
 
+.subsection-body.input-group.active {
+	display: flex;
+}
+
+.pad {
+	padding: 0 1rem;
+}
 .title {
 	display: flex;
 	align-items: center;
