@@ -36,6 +36,11 @@ function processMessage(request, sender, sendResponse) {
 		var dateCount = getDateCount(request);
 		sendResponse(dateCount);
 		break;
+		
+	  case "getWishlistCounts":
+		  var wishlistCount = getWishlistCount();
+		  sendResponse(wishlistCount);
+		  break;
 
 	  default:
 		break;
@@ -45,7 +50,7 @@ function processMessage(request, sender, sendResponse) {
 function getRarityCounts() {
 	var rarityCounts = {};
 
-	for (var pet of $(".pet")) {
+	for (var pet of $(".archive-pet-tree, .pet")) {
 		var rarity = getRarity(pet);
 		
 		if (rarityCounts[rarity]) {
@@ -90,6 +95,14 @@ function getDateCount(request) {
 	}
 	
 	return count;
+}
+
+function getWishlistCount() {
+	var totalPets = $(".wllink").length;
+	var ownedPets = $(".wl_owned").length;
+	var wishlistedPets = $(".wl_added").length;
+	
+	return {totalPets, ownedPets, wishlistedPets}
 }
 
 function selectRarities(request) {
@@ -181,15 +194,15 @@ function getDate(pet) {
 }
 
 function getRarity(pet) {
-	var petRarity = $(pet).find(".pet-rarity");
-	
-	if (petRarity.length === 0) {
-		return "Unknown";
-	}
-	
-	var rarityImage = petRarity.find("img");
+	var rarityImage = $(pet).find("img:not([alt='Pet'])");
+	var test = $(pet).find("img");
 	
 	if (rarityImage.length === 0) {
+		var petRarity = $(pet).find(".pet-rarity");	
+		if (petRarity.length === 0) {
+			return "Unknown";
+		}
+
 		return petRarity[0].innerHTML;
 	} else {
 		return rarityImage.attr("alt") || "Unknown";

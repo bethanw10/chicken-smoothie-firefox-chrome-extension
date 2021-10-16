@@ -268,6 +268,41 @@
 	</div>
 
 	<div class="section">
+		<div id="rename-accordion" class="accordion bg-transparent">
+			<div class="title">
+				<h6>Wishlist Helper</h6>
+				<i class="material-icons-outlined info-icon" data-toggle="tooltip" data-placement="bottom" title="Add multiple pets to the wishlist at once from the archive page">info</i>
+			</div>
+			<i class="accordion-arrow material-icons">keyboard_arrow_up</i>
+		</div>
+		<div class="section-body">
+			<div class="stats">
+				<b><span id="num-owned">-</span></b> owned
+			</div>
+			<div class="stats">
+				<b><span id="num-wishlisted">-</span></b> wishlisted
+			</div>
+			<span class="warning"><i class="material-icons">report_problem</i>Warning: Can't be undone!<i class="material-icons">report_problem</i></span>
+			<!-- <form id="wishlist-form">
+				<button id="wishlist-add-all" class="btn btn-primary btn-sm submit-button">Add all pets</button>
+				<button id="wishlist-remove-all" class="btn btn-primary btn-sm submit-button">Remove all pets</button>
+				<button id="wishlist-add-unowned" class="btn btn-primary btn-sm submit-button">Add all <b>unowned</b> pets</button>
+				<button id="wishlist-re" class="btn btn-primary btn-sm submit-button">Remove all <b>owned</b> pets</button>
+			</form> -->
+			<select class="custom-select" id="wishlist-add-remove">
+				<option selected value="1">Add</option>
+				<option value="2">Remove</option>
+			</select>
+			<select class="custom-select" id="wishlist-pet-type">
+				<option selected value="1">all pets</option>
+				<option value="2">all owned pets</option>
+				<option value="3">all unowned pets</option>
+			</select>
+			<button id="wishlist-submit" class="btn btn-primary btn-sm submit-button">Go</button>
+		</div>
+	</div>
+
+	<div class="section">
 		<div id="settings-accordion" class="accordion bg-transparent">
 			<h6>Settings</h6><i class="accordion-arrow material-icons">keyboard_arrow_up</i>
 		</div>

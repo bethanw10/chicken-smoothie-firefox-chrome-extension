@@ -130,5 +130,28 @@ h6 {
 
 .submit-button {
 	width: 100%;
-	 border-radius: 5px;
+	border-radius: 5px;
+}
+
+.warning {
+	color: #c3790a;
+	text-align: center;
+	font-weight: 600;
+	display: flex;
+    align-items: center;
+	justify-content: center;
+}
+
+.stats {
+	text-align: center;
+	color: #666;
+}
+
+.warning i {
+	font-size: 16px;
+	margin: 5px;
+}
+
+#wishlist-form button {
+	margin: 5px 0;
 }

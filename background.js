@@ -11,7 +11,7 @@ async function redirect(details) {
 
 		if (details.url.includes('archive') && result.enableArchivePageSize) {
 			pageSize = result.archivePageSize
-		} else if (result.enableGroupPageSize) {
+		} else if (!details.url.includes('archive') && result.enableGroupPageSize) {
 			pageSize = result.groupPageSize
 		} else {
 			return
