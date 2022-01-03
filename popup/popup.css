@@ -133,13 +133,18 @@ h6 {
 	border-radius: 5px;
 }
 
+.wishlist-title {
+	color: #666;
+	display: flex;
+    align-items: baseline;
+	justify-content: center;
+	margin-bottom: 5px;
+}
+
 .warning {
 	color: #c3790a;
 	text-align: center;
 	font-weight: 600;
-	display: flex;
-    align-items: center;
-	justify-content: center;
 }
 
 .stats {
@@ -148,10 +153,23 @@ h6 {
 }
 
 .warning i {
-	font-size: 16px;
-	margin: 5px;
+	font-size: 12px;
+	margin-right: 5px;
 }
 
-#wishlist-form button {
-	margin: 5px 0;
+#wishlist-form {
+	display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+}
+
+.wishlist-card {
+	padding: 10px;
+	margin-top: 5px;
+}
+
+hr {
+	margin: 7px 0;
 }
