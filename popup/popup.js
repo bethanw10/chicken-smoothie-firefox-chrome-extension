@@ -1,5 +1,13 @@
-function restoreSettings() {
-    chrome.storage.local.get(null, function (res) {
+// TODO split up
+
+async function getCurrentTab() {
+    let queryOptions = { active: true, currentWindow: true };
+    let [tab] = await chrome.tabs.query(queryOptions);
+    return tab;
+}
+
+async function restoreSettings() {
+    chrome.storage.local.get(null, async function (res) {
         $("#group-page-size").attr("value", res.groupPageSize || '100');
         $("#archive-page-size").attr("value", res.archivePageSize || '100');
 
@@ -48,21 +56,17 @@ function restoreSettings() {
         saveEnableGroupPageSize();
         saveEnableArchivePageSize();
 
-        getActiveTab(function (tab) {
-            chrome.tabs
-                .sendMessage(tab[0].id, { "message": "getRarityCounts" }, displayRarityCount);
+        let tab = await getCurrentTab();
 
-                chrome.tabs
-                .sendMessage(tab[0].id, { "message": "getWishlistCounts" }, displayWishlistCounts);
+        chrome.tabs
+            .sendMessage(tab.id, { "message": "getRarityCounts" }, displayRarityCount);
 
-            updateDuplicateCount();
-            updateDateCount();
-        });
+        chrome.tabs
+            .sendMessage(tab.id, { "message": "getWishlistCounts" }, displayWishlistCounts);
+
+        updateDuplicateCount();
+        updateDateCount();
     });
-}
-
-function getActiveTab(callback) {
-    return chrome.tabs.query({ active: true, currentWindow: true }, callback);
 }
 
 /* 
@@ -72,44 +76,48 @@ function getActiveTab(callback) {
 
     So load the scripts manually if they don't exist
 */
-function checkContentScript() {
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, { "message": "checkScriptExists" }, function (msg) {
-            msg = msg || {};
-            if (msg != true) {
-                chrome.tabs.executeScript(tab[0].id, { file: "/library/jquery.js" });
-                chrome.tabs.executeScript(tab[0].id, { file: "content-script.js" });
-            }
-        });
-    });
+async function checkContentScript() {
+    let tab = await getCurrentTab();
 
+    chrome.tabs.sendMessage(tab.id, { "message": "checkScriptExists" }, function (msg) {
+        msg = msg || {};
+        if (msg !== true) {
+            chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                files: ["/library/jquery.js", "content-script.js"]
+            });
+
+            restoreSettings();
+        }
+    });
 }
 
 /*DUPLICATES */
-function selectDuplicates() {
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, {
-            "message": "selectDuplicates",
-            "excludeUnknown": $('#exclude-unknown').prop('checked'),
-            "keepOldest": $('#keep-oldest').prop('checked')
-        });
+async function selectDuplicates() {
+    checkContentScript();
+    let tab = await getCurrentTab();
+
+    chrome.tabs.sendMessage(tab.id, {
+        "message": "selectDuplicates",
+        "excludeUnknown": $('#exclude-unknown').prop('checked'),
+        "keepOldest": $('#keep-oldest').prop('checked')
     });
 
     return false;
 }
 
-function updateDuplicateCount() {
-    getActiveTab(function (tab) {
-        chrome.tabs
-            .sendMessage(tab[0].id, {
-                "message": "getDuplicateCount",
-                "excludeUnknown": $('#exclude-unknown').prop('checked')
-            }, function (count) {
-                if (count !== undefined) {
-                    $('#duplicates-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
-                }
-            });
-    });
+async function updateDuplicateCount() {
+    let tab = await getCurrentTab();
+
+    chrome.tabs
+        .sendMessage(tab.id, {
+            "message": "getDuplicateCount",
+            "excludeUnknown": $('#exclude-unknown').prop('checked')
+        }, function (count) {
+            if (count !== undefined) {
+                $('#duplicates-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
+            }
+        });
 }
 
 function saveExcludeUnknown() {
@@ -160,43 +168,42 @@ function setupDatepickers() {
     });
 }
 
-function selectDates() {
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, {
-            "message": "selectDates",
-            "fromDate": $("#from-date").datepicker("getDate"),
-            "toDate": $("#to-date").datepicker("getDate")
-        });
+async function selectDates() {
+    let tab = await getCurrentTab();
+
+    chrome.tabs.sendMessage(tab.id, {
+        "message": "selectDates",
+        "fromDate": $("#from-date").datepicker("getDate"),
+        "toDate": $("#to-date").datepicker("getDate")
     });
 }
 
-function updateDateCount() {
-    getActiveTab(function (tab) {
-        chrome.tabs
-            .sendMessage(tab[0].id, {
-                "message": "getDateCount",
-                "fromDate": $("#from-date").datepicker("getDate"),
-                "toDate": $("#to-date").datepicker("getDate")
-            }, function (count) {
-                if (count !== undefined) {
-                    $('#date-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
-                }
-            });
-    });
+async function updateDateCount() {
+    let tab = await getCurrentTab();
+
+    chrome.tabs
+        .sendMessage(tab.id, {
+            "message": "getDateCount",
+            "fromDate": $("#from-date").datepicker("getDate"),
+            "toDate": $("#to-date").datepicker("getDate")
+        }, function (count) {
+            if (count !== undefined) {
+                $('#date-button').text(`Select ${count} ${count == 1 ? 'pet' : 'pets'}`);
+            }
+        });
 }
 
 /*RENAME */
-function renamePets(e) {
+async function renamePets(e) {
     e.preventDefault();
 
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, {
-            "message": "renamePets",
-            "name": $("#rename-name").val(),
-            "rarities": $('#rename-rarity').prop('checked') ? getSelectedRenameRarities('value') : null,
-            "fromDate": $('#rename-date').prop('checked') ? $("#rename-from-date").datepicker("getDate") : null,
-            "toDate": $('#rename-date').prop('checked') ? $("#rename-to-date").datepicker("getDate") : null
-        });
+    let tab = await getCurrentTab();
+    chrome.tabs.sendMessage(tab.id, {
+        "message": "renamePets",
+        "name": $("#rename-name").val(),
+        "rarities": $('#rename-rarity').prop('checked') ? getSelectedRenameRarities('value') : null,
+        "fromDate": $('#rename-date').prop('checked') ? $("#rename-from-date").datepicker("getDate") : null,
+        "toDate": $('#rename-date').prop('checked') ? $("#rename-to-date").datepicker("getDate") : null
     });
 }
 
@@ -254,12 +261,11 @@ function updateRarityCount(rarityCounts) {
     $('#rarity-button').text(`Select ${total} ${total == 1 ? 'pet' : 'pets'}`);
 }
 
-function selectRarities() {
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, {
-            "message": "selectRarities",
-            "rarities": getSelectedRarities('value')
-        });
+async function selectRarities() {
+    let tab = await getCurrentTab();
+    chrome.tabs.sendMessage(tab.id, {
+        "message": "selectRarities",
+        "rarities": getSelectedRarities('value')
     });
 
     return false;
@@ -297,15 +303,14 @@ function saveRenameRaritySelections() {
     });
 }
 
-function saveRaritySelections() {
+async function saveRaritySelections() {
     chrome.storage.local.set({
         selectedRarities: getSelectedRarities('id')
     });
 
-    getActiveTab(function (tab) {
-        chrome.tabs
-            .sendMessage(tab[0].id, { "message": "getRarityCounts" }, updateRarityCount);
-    });
+    let tab = await getCurrentTab();
+    chrome.tabs
+        .sendMessage(tab.id, { "message": "getRarityCounts" }, updateRarityCount);
 }
 
 /*WISHLIST*/
@@ -317,6 +322,20 @@ function displayWishlistCounts(wishlistCounts) {
     $("#num-owned").text(` ${wishlistCounts["ownedPets"]}/${wishlistCounts["totalPets"]} `);
     $("#num-wishlisted").text(` ${wishlistCounts["wishlistedPets"]}/${wishlistCounts["totalPets"]} `);
 }
+
+async function changeWishlist(mode, type) {
+    let tab = await getCurrentTab();
+    chrome.tabs.sendMessage(tab.id, {
+        "message": "changeWishlist",
+        "mode": mode,
+        "petType": type,
+    });
+
+    chrome.tabs
+    .sendMessage(tab.id, { "message": "getWishlistCounts" }, displayWishlistCounts);
+}
+
+/* ACCORDIONS */
 
 function handleAccordionClick(e) {
     toggleAccordion(this);
@@ -341,18 +360,6 @@ function getClosedAccordions() {
     return selected;
 }
 
-function changeWishlist(mode, type) {
-    getActiveTab(function (tab) {
-        chrome.tabs.sendMessage(tab[0].id, {
-            "message": "changeWishlist",
-            "mode": mode,
-            "petType": type,
-        });
-    });
-
-    return false;
-}
-
 /* SETTINGS */
 function saveSettings(e) {
     var groupSize = $("#group-page-size").val() || '100';
@@ -367,9 +374,71 @@ function saveSettings(e) {
         archivePageSize: archiveSize
     });
 
-    chrome.tabs.reload();
+    addGroupPageSizeRule(groupSize);
+    addArchivePageSizeRule(archiveSize);
 
     e.preventDefault();
+}
+
+const GroupPageSizeRuleId = 1;
+const ArchivePageSizeRuleId = 2;
+
+function addGroupPageSizeRule(groupSize) {
+    chrome.declarativeNetRequest.updateDynamicRules(
+        {
+            addRules: [{
+                "id": GroupPageSizeRuleId,
+                "priority": 1,
+                "action": {
+                    "type": "redirect",
+                    "redirect": {
+                        "transform": {
+                            "queryTransform": {
+                                "addOrReplaceParams": [{
+                                    "key": "pageSize",
+                                    "value": groupSize
+                                }]
+                            }
+                        }
+                    }
+                },
+                "condition": {
+                    "urlFilter": "https://www.chickensmoothie.com/accounts/viewgroup.php*",
+                    "resourceTypes": ["main_frame"]
+                }
+            }],
+            removeRuleIds: [GroupPageSizeRuleId]
+        }
+    );
+}
+
+function addArchivePageSizeRule(archiveSize) {
+    chrome.declarativeNetRequest.updateDynamicRules(
+        {
+            addRules: [{
+                "id": ArchivePageSizeRuleId,
+                "priority": 1,
+                "action": {
+                    "type": "redirect",
+                    "redirect": {
+                        "transform": {
+                            "queryTransform": {
+                                "addOrReplaceParams": [{
+                                    "key": "pageSize",
+                                    "value": archiveSize
+                                }]
+                            }
+                        }
+                    }
+                },
+                "condition": {
+                    "urlFilter": "https://www.chickensmoothie.com/archive/*/*",
+                    "resourceTypes": ["main_frame"]
+                }
+            }],
+            removeRuleIds: [ArchivePageSizeRuleId]
+        }
+    );
 }
 
 function saveEnableGroupPageSize() {
@@ -377,8 +446,13 @@ function saveEnableGroupPageSize() {
 
     if ($('#enable-group-page-size').prop('checked')) {
         $(panel).addClass('active');
+
+        var groupSize = $("#group-page-size").val() || '100';
+        addGroupPageSizeRule(groupSize);
+
     } else {
         $(panel).removeClass('active');
+        chrome.declarativeNetRequest.updateDynamicRules({ addRules: [], removeRuleIds: [GroupPageSizeRuleId] });
     }
 
     chrome.storage.local.set({
@@ -391,13 +465,33 @@ function saveEnableArchivePageSize() {
 
     if ($('#enable-archive-page-size').prop('checked')) {
         $(panel).addClass('active');
+
+        var archiveSize = $("#archive-page-size").val() || '100';
+        addArchivePageSizeRule(archiveSize);
     } else {
         $(panel).removeClass('active');
+        chrome.declarativeNetRequest.updateDynamicRules({ addRules: [], removeRuleIds: [ArchivePageSizeRuleId] });
     }
 
     chrome.storage.local.set({
         enableArchivePageSize: $('#enable-archive-page-size').prop('checked')
     });
+}
+
+function setupPageSizes() {
+    if ($('#enable-group-page-size').prop('checked')) {
+        var groupSize = $("#group-page-size").val() || '100';
+        addGroupPageSizeRule(groupSize);
+    } else {
+        chrome.declarativeNetRequest.updateDynamicRules({ addRules: [], removeRuleIds: [GroupPageSizeRuleId] });
+    }
+
+    if ($('#enable-archive-page-size').prop('checked')) {
+        var archiveSize = $("#archive-page-size").val() || '100';
+        addArchivePageSizeRule(archiveSize);
+    } else {
+        chrome.declarativeNetRequest.updateDynamicRules({ addRules: [], removeRuleIds: [ArchivePageSizeRuleId] });
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -417,6 +511,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Restoring state
     restoreSettings();
     setupDatepickers();
+    setupPageSizes();
 
     $(".accordion").on("click", handleAccordionClick);
     $('[data-toggle="tooltip"]').tooltip();

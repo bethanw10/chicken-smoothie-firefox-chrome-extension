@@ -4,12 +4,9 @@
   "description": "A utility extension for Chicken Smoothie.",
   "homepage_url": "https://github.com/bethanw10",
   "manifest_version": 2,
-  "browser_action": {
-      "default_title": "Chicken Smoothie Helper",
+  "action": {
+    "default_title": "Chicken Smoothie Helper",
 	  "default_popup": "popup/popup.html"
-  },  
-  "background": {
-      "scripts": ["background.js"]
   },
   "icons": {
 	"16": "images/icon-16.png",
@@ -20,16 +17,20 @@
   "permissions": [
     "storage",
     "webRequest",
-    "webRequestBlocking",
-	"https://www.chickensmoothie.com/",
-	"tabs"
+	  "tabs",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "activeTab",
+    "scripting"
   ],
-
+  "host_permissions": [
+    "https://www.chickensmoothie.com/"
+  ],
   "content_scripts": [
     {
       "matches": ["https://www.chickensmoothie.com/accounts/viewgroup.php*", "https://www.chickensmoothie.com/archive/*"],
       "js": ["content-script.js", "/library/jquery.js"]
     }
   ],
-  "version": "1.5.1"
+  "version": "1.5.2"
 }
