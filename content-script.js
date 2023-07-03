@@ -228,8 +228,7 @@ function getDate(pet) {
 }
 
 function getRarity(pet) {
-	var rarityImage = $(pet).find("img:not([alt='Pet'])");
-	var test = $(pet).find("img");
+	var rarityImage = $(pet).find("img:not([alt='Pet'], [alt='Generate random name'], [alt='Go back to original name'])");
 
 	if (rarityImage.length === 0) {
 		var petRarity = $(pet).find(".pet-rarity");
