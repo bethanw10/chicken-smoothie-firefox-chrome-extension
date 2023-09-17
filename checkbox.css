@@ -38,29 +38,64 @@
 }
 
 .omg-common:checked ~ .custom-label {
-  background: #0037fb;
+  background: #1f81ed;
+}
+
+.extremely-common:checked ~ .custom-label {
+  background: #0db9ff;
 }
 
 .very-common:checked ~ .custom-label {
-  background: #39c6ce;
+  background: #37d5c3;
 }
 
 .common:checked ~ .custom-label {
-  background: #48cc2d;
+  background: #34be72;
 }
 
 .uncommon:checked ~ .custom-label {
-  background: #f39c16;
+  background: #9bd82f;
+}
+
+.very-uncommon:checked ~ .custom-label {
+  background: #f7d700;
+}
+
+.extremely-uncommon:checked ~ .custom-label {
+  background: #f08107;
 }
 
 .rare:checked ~ .custom-label {
-  background: #fb6d00;
+  background: #ff0d20;
 }
 
 .very-rare:checked ~ .custom-label {
-  background: #f71d10;
+  background: #ff4fb1;
+}
+
+.extremely-rare:checked ~ .custom-label {
+  background: #c52bd4;
 }
 
 .omg-rare:checked ~ .custom-label {
-  background: #de23e2;
+  border: transparent;
+  background: linear-gradient(
+        135deg,
+        rgba(255, 0, 0, 1) 0%,
+        rgba(255, 154, 0, 1) 10%,
+        rgba(208, 222, 33, 1) 20%,
+        rgba(79, 220, 74, 1) 30%,
+        rgba(63, 218, 216, 1) 40%,
+        rgba(47, 201, 226, 1) 50%,
+        rgba(28, 127, 238, 1) 60%,
+        rgba(95, 21, 242, 1) 70%,
+        rgba(186, 12, 248, 1) 80%,
+        rgba(251, 7, 217, 1) 90%,
+        rgba(255, 0, 0, 1) 100%
+    );
+}
+
+.omg-rare:checked ~ .custom-label:after {
+  top: 2px;
+  left: 6px;
 }

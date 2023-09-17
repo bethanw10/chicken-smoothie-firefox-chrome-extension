@@ -289,11 +289,15 @@ function displayRarityCount(rarityCounts) {
 
     $(".unknown-count").text(rarityCounts["Unknown"]);
     $(".omg-common-count").text(rarityCounts["OMG so common"]);
+    $(".extremely-common-count").text(rarityCounts["Extremely common"]);
     $(".very-common-count").text(rarityCounts["Very common"]);
     $(".common-count").text(rarityCounts["Common"]);
     $(".uncommon-count").text(rarityCounts["Uncommon"]);
+    $(".very-uncommon-count").text(rarityCounts["Very uncommon"]);
+    $(".extremely-uncommon-count").text(rarityCounts["Extremely uncommon"]);
     $(".rare-count").text(rarityCounts["Rare"]);
     $(".very-rare-count").text(rarityCounts["Very rare"]);
+    $(".extremely-rare-count").text(rarityCounts["Extremely rare"]);
     $(".omg-rare-count").text(rarityCounts["OMG so rare!"]);
 }
 
