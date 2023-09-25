@@ -340,7 +340,6 @@ async function changeWishlist(mode, type) {
 }
 
 /* ACCORDIONS */
-
 function handleAccordionClick(e) {
     toggleAccordion(this);
 }
